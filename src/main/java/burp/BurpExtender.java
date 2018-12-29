@@ -1,5 +1,6 @@
 package burp;
 
+import burp.dispatcher.ContentGrabbingCheck;
 import burp.dispatcher.DispatcherSecurityCheck;
 
 /**
@@ -27,8 +28,12 @@ public class BurpExtender implements IBurpExtender {
         // set our extension name
         callbacks.setExtensionName(EXTENSION_NAME);
 
-        DispatcherSecurityCheck dispatcherSecurityCheck = new DispatcherSecurityCheck(this.callbacks);
         // register all custom scanner checks
+
+        final DispatcherSecurityCheck dispatcherSecurityCheck = new DispatcherSecurityCheck(this.callbacks);
         callbacks.registerScannerCheck(dispatcherSecurityCheck);
+
+        final ContentGrabbingCheck contentGrabbingCheck = new ContentGrabbingCheck(this.callbacks);
+        callbacks.registerScannerCheck(contentGrabbingCheck);
     }
 }
