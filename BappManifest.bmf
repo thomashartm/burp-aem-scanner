@@ -1,0 +1,12 @@
+Uuid: 5a9aca27-88cc-4e7c-a7d8-37e33d3c8a69
+ExtensionType: 1
+Name: AEM Security Scanner
+RepoName: aem-security-scanner
+ScreenVersion: 1.0.0
+SerialVersion: 1
+MinPlatformVersion: 0
+ProOnly: True
+Author: Thomas Hartmann
+ShortDescription: Validates a system which is supposed to be an instance of Adobe Experience Manager (AEM) and verifies if certain known issues such as known misconfigurations are present.
+EntryPoint:
+BuildCommand: mvn package -DskipTests=true -Dmaven.javadoc.skip=true -B

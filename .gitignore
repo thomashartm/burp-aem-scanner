@@ -1,0 +1,12 @@
+.project
+.settings/
+.classpath
+target/
+.DS_Store
+*.iml
+atlassian-ide-plugin.xml
+.idea
+.idea/checks-style.xml
+.vlt
+.sass-cache
+.derived
