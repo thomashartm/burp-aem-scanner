@@ -13,7 +13,7 @@ import java.util.Optional;
  * The AEM Dispatcher should restrict external access to critical and administrative resources as much as possible.
  * This active scanner checks for dispatcher security issues by actively requesting access to administrative URLs and checking it it is denied.
  * See @{@link CriticalAemEndpoint} for the list of requested endpoints.
- *
+ * <p>
  * Checks are based on https://helpx.adobe.com/experience-manager/dispatcher/using/dispatcher-configuration.html#TestingDispatcherSecurity.
  *
  * @author thomas.hartmann@netcentric.biz
@@ -87,7 +87,7 @@ public class DispatcherSecurityCheck implements IScannerCheck, IExtensionStateLi
         // ok it is not a 404 so we gonna report it
         final ScanIssue.ScanIssueBuilder builder = ScanIssue.ScanIssueBuilder.aScanIssue();
         builder.withUrl(url);
-        builder.withName(String.format("DispatcherScan for endpoint %s with path: [%s]", endpoint.getName(), endpoint.getPath()));
+        builder.withName(endpoint.getName());
         builder.withHttpMessages(new IHttpRequestResponse[] { requestResponse });
         builder.withHttpService(requestResponse.getHttpService());
 
