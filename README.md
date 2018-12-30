@@ -22,11 +22,13 @@ The burp extension currently supports the following features:
 
 # How to build
 Execute the maven build in the root of the package.
-` mvn clean install`
+` mvn clean package`
+The compiled and deployable artifact is located in the target directory.
 
 To debug the extension, open burp via commandline with remote debugging enabled. 
 `java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar burpsuite_pro.jar`
 
 # How to install 
-Open Burp extender and the compiled and assembled JAR extensions.
+Build the project.
+Then open Burp extender and select the compiled and assembled JAR.
 The extender will automatically register all scans and the scanner will run in the context of passive and active auditing.

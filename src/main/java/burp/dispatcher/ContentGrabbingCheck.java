@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * @author thomas.hartmann@netcentric.biz
  * @since 12/2018
  */
-public class ContentGrabbingCheck implements IScannerCheck {
+public class ContentGrabbingCheck implements ConsolidatingScanner {
 
     private static final String AEM_FINGERPRINTER_MATCH = "Adobe AEM fingerprint detected";
 
@@ -215,12 +215,5 @@ public class ContentGrabbingCheck implements IScannerCheck {
         }
 
         return mutations;
-    }
-
-    @Override
-    public int consolidateDuplicateIssues(final IScanIssue existingIssue, final IScanIssue newIssue) {
-        final boolean areSameIssues = existingIssue.getIssueName().equals(newIssue.getIssueName()) && existingIssue.getIssueDetail()
-                .equals(newIssue.getIssueDetail());
-        return areSameIssues ? -1 : 0;
     }
 }
