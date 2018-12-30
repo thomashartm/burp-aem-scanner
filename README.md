@@ -1,10 +1,10 @@
-# AEM Security Scanner
+# Burp AEM Security Scanner
 
 AEM is an enterprise grade content management system used by a variety of high profile companies. 
 AEM is a powerful but complex system and requires thoughtful handling of defaults and configurations. 
 Therefore it leaves room for plenty of security bugs.
 
-The AEM Security Scanner is a burp extension providing  support for a number of Adobe's security checklist verifications 
+The Burp AEM Security Scanner is a burp extension providing support for a number of Adobe's security checklist verifications 
 and evaluates typical AEM and Dispatcher misconfigurations. 
 
 ## Burp Version
