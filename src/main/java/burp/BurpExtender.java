@@ -4,7 +4,7 @@ import burp.dispatcher.ContentGrabbingCheck;
 import burp.dispatcher.DispatcherSecurityCheck;
 
 /**
- * TODO - add javadoc
+ * AEM Security Scanner - BurpExtender. This class registers the scanner checks-
  *
  * @author thomas.hartmann@netcentric.biz
  * @since 11/2018
