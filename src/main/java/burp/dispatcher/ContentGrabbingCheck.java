@@ -151,13 +151,13 @@ public class ContentGrabbingCheck implements ConsolidatingScanner {
                     if (isInRange(statusCode, 200, 399)) {
                         // success related status codes ... we need to look closely
                         if (statusCode == 200 || statusCode == 302) {
-                            builder.withSeverityHigh();
-                        } else {
                             builder.withSeverityMedium();
+                        } else {
+                            builder.withSeverityInformation();
                         }
                         builder.withCertainConfidence();
                     } else {
-                        builder.withSeverityLow();
+                        builder.withSeverityInformation();
                         builder.withCertainConfidence();
                     }
 

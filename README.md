@@ -23,10 +23,13 @@ The burp extension currently supports the following features:
 
 # How to build
 Execute the maven build in the root of the package.
+
 ` mvn clean package`
+
 The compiled and deployable artifact is located in the target directory.
 
 To debug the extension, open burp via commandline with remote debugging enabled. 
+
 `java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar burpsuite_pro.jar`
 
 # How to install 
