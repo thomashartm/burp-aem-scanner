@@ -1,4 +1,5 @@
 # Burp AEM Security Scanner
+[![Build Status](https://travis-ci.org/thomashartm/burp-aem-scanner.svg?branch=master)](https://travis-ci.org/thomashartm/burp-aem-scanner)
 
 AEM is an enterprise grade content management system used by a variety of high profile companies. 
 AEM is a powerful but complex system and requires thoughtful handling of defaults and configurations. 
