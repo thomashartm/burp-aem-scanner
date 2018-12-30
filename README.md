@@ -7,6 +7,19 @@ Therefore it leaves room for plenty of security bugs.
 The AEM Security Scanner is a burp extension providing  support for a number of Adobe's security checklist verifications 
 and evaluates typical AEM and Dispatcher misconfigurations. 
 
+## Burp Version
+The extension uses the active scanning capabilities and therefore requires Burp Pro
+
+## Supported Features
+
+The burp extension currently supports the following features:
+
+| Check  | Type  |  Description |
+|---|---|---|
+|AEM Fingerprint|passive| Checks if any page exposes information which clearly identifies the system as Adobe AEM |
+|Content Grapping Check|active| Verifies if the dispatcher configuration is vulnerable to information leakage and exposes critical information |
+|Dispatcher Security Check|active| Checks if administrative or dangerous features are exposed to the ouside world |
+
 # How to build
 Execute the maven build in the root of the package.
 ` mvn clean install`
