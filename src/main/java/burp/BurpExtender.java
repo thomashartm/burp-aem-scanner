@@ -2,6 +2,7 @@ package burp;
 
 import burp.dispatcher.ContentGrabbingCheck;
 import burp.dispatcher.DispatcherSecurityCheck;
+import burp.sling.ErrorPagePlatformInfoLeakage;
 
 /**
  * AEM Security Scanner - BurpExtender. This class registers the scanner checks-
@@ -35,5 +36,8 @@ public class BurpExtender implements IBurpExtender {
 
         final ContentGrabbingCheck contentGrabbingCheck = new ContentGrabbingCheck(this.callbacks);
         callbacks.registerScannerCheck(contentGrabbingCheck);
+
+        final ErrorPagePlatformInfoLeakage errorPagePlatformInfoLeakage = new ErrorPagePlatformInfoLeakage(this.callbacks);
+        callbacks.registerScannerCheck(errorPagePlatformInfoLeakage);
     }
 }

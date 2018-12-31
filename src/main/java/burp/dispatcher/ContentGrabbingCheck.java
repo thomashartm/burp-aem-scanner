@@ -133,20 +133,13 @@ public class ContentGrabbingCheck implements ConsolidatingScanner {
 
                 if (statusCode != 404) {
                     // AEM is responding to the message, now we need to evaluate the response
-                    final IRequestInfo requestInfo = this.helpers
-                            .analyzeRequest(requestResponse.getHttpService(), requestResponse.getRequest());
-                    final URL requestUrl = requestInfo.getUrl();
-
-                    final ScanIssue.ScanIssueBuilder builder = ScanIssue.ScanIssueBuilder.aScanIssue();
-                    builder.withUrl(requestUrl);
-                    builder.withHttpMessages(new IHttpRequestResponse[] { requestResponse });
-                    builder.withHttpService(requestResponse.getHttpService());
-                    builder.withName(AEM_CONTENT_GRABBING_NAME);
-
                     final String details = String
                             .format("The page %s is leaking information which is not supposed to be shared with the outside world. AEM's dispatcher must block the mutation %s. Currently it responds with statuscode %s",
                                     url.toString(), mutation.toString(), String.valueOf(statusCode));
-                    builder.withDetail(details);
+                    final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, AEM_CONTENT_GRABBING_NAME, details);
+
+                    // we use the original URL as we else spam the target tree with all mutations.
+                    builder.withUrl(url);
 
                     if (isInRange(statusCode, 200, 399)) {
                         // success related status codes ... we need to look closely
@@ -215,5 +208,10 @@ public class ContentGrabbingCheck implements ConsolidatingScanner {
         }
 
         return mutations;
+    }
+
+    @Override
+    public IExtensionHelpers getHelpers() {
+        return this.helpers;
     }
 }

@@ -1,6 +1,7 @@
 package burp.dispatcher;
 
 import burp.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -75,15 +76,9 @@ public class DispatcherSecurityCheck implements ConsolidatingScanner {
             return Optional.empty();
         }
 
-        // ok it is not a 404 so we gonna report it
-        final ScanIssue.ScanIssueBuilder builder = ScanIssue.ScanIssueBuilder.aScanIssue();
-        builder.withUrl(url);
-        builder.withName(vulnerability.getName());
-        builder.withHttpMessages(new IHttpRequestResponse[] { requestResponse });
-        builder.withHttpService(requestResponse.getHttpService());
+        final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, vulnerability.getName(), vulnerability.getDescription());
 
         // start here and may add additional information depending on the statuscode.
-        final StringBuilder detailBuilder = new StringBuilder(vulnerability.getDescription());
         builder.withSeverity(vulnerability.getSeverity());
         if (isInRange(statusCode, 200, 399)) {
             // success related status codes ... we need to look closely
@@ -95,7 +90,6 @@ public class DispatcherSecurityCheck implements ConsolidatingScanner {
         } else {
             builder.withTenativeConfidence();
         }
-        builder.withDetail(detailBuilder.toString());
 
         return Optional.of(builder.build());
     }
@@ -103,5 +97,10 @@ public class DispatcherSecurityCheck implements ConsolidatingScanner {
     private boolean isInRange(short value, int lowerBound, int upperBound) {
         final Integer intval = Integer.valueOf(value);
         return lowerBound <= intval && intval <= upperBound;
+    }
+
+    @Override
+    public IExtensionHelpers getHelpers() {
+        return this.helpers;
     }
 }
