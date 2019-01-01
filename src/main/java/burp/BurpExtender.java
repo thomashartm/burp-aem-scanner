@@ -12,7 +12,7 @@ import burp.sling.ErrorPagePlatformInfoLeakage;
  */
 public class BurpExtender implements IBurpExtender {
 
-    private static final String EXTENSION_NAME = "AEM Security Checklist Validator";
+    private static final String EXTENSION_NAME = "AEM Security Scanner";
 
     private IBurpExtenderCallbacks callbacks;
 
