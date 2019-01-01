@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner, WithIssueBuilder {
 
-    public static final String ERROR_PAGE_INFO_LEAKAGE = "Platform information disclosed";
+    public static final String ERROR_PAGE_INFO_LEAKAGE = "Server platform information disclosed";
 
     private static final String ERROR_PAGE_INFO_DETAILS = "The error pages leaks information about the platform/runtime environment. See %s";
 
@@ -47,6 +47,9 @@ public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner, WithI
                 final String details = String.format(ERROR_PAGE_INFO_DETAILS, StringUtils.join(addresses, ","));
                 final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(baseRequestResponse, ERROR_PAGE_INFO_LEAKAGE, details);
                 // for now it is only information
+
+                final IRequestInfo requestInfo = this.helpers.analyzeRequest(baseRequestResponse.getRequest());
+                builder.withUrl(requestInfo.getUrl());
                 builder.withSeverityLow();
                 builder.withCertainConfidence();
                 results.add(builder.build());
