@@ -1,7 +1,6 @@
 package burp.dispatcher;
 
 import burp.*;
-import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,7 +19,7 @@ import java.util.Optional;
  * @author thomas.hartmann@netcentric.biz
  * @since 12/2018
  */
-public class DispatcherSecurityCheck implements ConsolidatingScanner {
+public class DispatcherSecurityCheck implements ConsolidatingScanner, WithIssueBuilder {
 
     private final IBurpExtenderCallbacks callbacks;
     private IExtensionHelpers helpers;
@@ -76,7 +75,8 @@ public class DispatcherSecurityCheck implements ConsolidatingScanner {
             return Optional.empty();
         }
 
-        final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, vulnerability.getName(), vulnerability.getDescription());
+        final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, vulnerability.getName(),
+                vulnerability.getDescription());
 
         // start here and may add additional information depending on the statuscode.
         builder.withSeverity(vulnerability.getSeverity());

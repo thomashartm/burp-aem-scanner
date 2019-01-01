@@ -1,9 +1,5 @@
 package burp;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.net.URL;
-
 /**
  * Extends the {@link IScannerCheck} and makes sure that consuming scanners are able to consolidate issues.
  *
@@ -24,21 +20,4 @@ public interface ConsolidatingScanner extends IScannerCheck {
                 .equals(newIssue.getIssueDetail());
         return areSameIssues ? -1 : 0;
     }
-
-    default ScanIssue.ScanIssueBuilder createIssueBuilder(final IHttpRequestResponse baseRequestResponse, final String name, final String details) {
-        final IRequestInfo request = getHelpers()
-                .analyzeRequest(baseRequestResponse.getHttpService(), baseRequestResponse.getRequest());
-        final URL url = request.getUrl();
-        final ScanIssue.ScanIssueBuilder builder = ScanIssue.ScanIssueBuilder.aScanIssue();
-        builder.withUrl(url);
-
-        builder.withHttpMessages(new IHttpRequestResponse[] { baseRequestResponse });
-        builder.withHttpService(baseRequestResponse.getHttpService());
-
-        builder.withName(name);
-        builder.withDetail(details);
-        return builder;
-    }
-
-    IExtensionHelpers getHelpers();
 }

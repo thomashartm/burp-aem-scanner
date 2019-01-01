@@ -14,7 +14,7 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 12/2018
  */
-public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner {
+public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner, WithIssueBuilder {
 
     public static final String ERROR_PAGE_INFO_LEAKAGE = "Platform information disclosed";
 
@@ -24,6 +24,10 @@ public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner {
 
     private IExtensionHelpers helpers;
 
+    /**
+     *
+     * @param callbacks
+     */
     public ErrorPagePlatformInfoLeakage(final IBurpExtenderCallbacks callbacks) {
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
@@ -43,7 +47,7 @@ public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner {
                 final String details = String.format(ERROR_PAGE_INFO_DETAILS, StringUtils.join(addresses, ","));
                 final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(baseRequestResponse, ERROR_PAGE_INFO_LEAKAGE, details);
                 // for now it is only information
-                builder.withSeverityInformation();
+                builder.withSeverityLow();
                 builder.withCertainConfidence();
                 results.add(builder.build());
             }

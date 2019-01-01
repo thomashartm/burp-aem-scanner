@@ -1,6 +1,6 @@
 package burp;
 
-import burp.dispatcher.ContentGrabbingCheck;
+import burp.dispatcher.AemFingerPrinterBasedPagesCheck;
 import burp.dispatcher.DispatcherSecurityCheck;
 import burp.sling.ErrorPagePlatformInfoLeakage;
 
@@ -34,7 +34,7 @@ public class BurpExtender implements IBurpExtender {
         final DispatcherSecurityCheck dispatcherSecurityCheck = new DispatcherSecurityCheck(this.callbacks);
         callbacks.registerScannerCheck(dispatcherSecurityCheck);
 
-        final ContentGrabbingCheck contentGrabbingCheck = new ContentGrabbingCheck(this.callbacks);
+        final AemFingerPrinterBasedPagesCheck contentGrabbingCheck = new AemFingerPrinterBasedPagesCheck(this.callbacks);
         callbacks.registerScannerCheck(contentGrabbingCheck);
 
         final ErrorPagePlatformInfoLeakage errorPagePlatformInfoLeakage = new ErrorPagePlatformInfoLeakage(this.callbacks);
