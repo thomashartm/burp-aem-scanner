@@ -66,11 +66,6 @@ public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner, WithI
     }
 
     @Override
-    public int consolidateDuplicateIssues(IScanIssue iScanIssue, IScanIssue iScanIssue1) {
-        return 0;
-    }
-
-    @Override
     public IExtensionHelpers getHelpers() {
         return this.helpers;
     }
