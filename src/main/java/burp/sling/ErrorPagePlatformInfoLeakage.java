@@ -3,7 +3,6 @@ package burp.sling;
 import burp.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +24,6 @@ public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner, WithI
     private IExtensionHelpers helpers;
 
     /**
-     *
      * @param callbacks
      */
     public ErrorPagePlatformInfoLeakage(final IBurpExtenderCallbacks callbacks) {
@@ -40,6 +38,7 @@ public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner, WithI
         final byte[] response = baseRequestResponse.getResponse();
         final IResponseInfo responseInfo = this.helpers.analyzeResponse(response);
         if (responseInfo.getStatusCode() >= 400) {
+
             final String responseMessage = this.helpers.bytesToString(response);
             final String[] addresses = StringUtils.substringsBetween(responseMessage, "<address>", "</address>");
 
@@ -48,7 +47,9 @@ public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner, WithI
                 final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(baseRequestResponse, ERROR_PAGE_INFO_LEAKAGE, details);
                 // for now it is only information
 
-                final IRequestInfo requestInfo = this.helpers.analyzeRequest(baseRequestResponse.getRequest());
+                final IRequestInfo requestInfo = this.helpers
+                        .analyzeRequest(baseRequestResponse.getHttpService(), baseRequestResponse.getRequest());
+                callbacks.printOutput(String.format("Found platform info leakage %s", requestInfo.getUrl()));
                 builder.withUrl(requestInfo.getUrl());
                 builder.withSeverityLow();
                 builder.withCertainConfidence();

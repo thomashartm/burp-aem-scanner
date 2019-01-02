@@ -2,6 +2,7 @@ package burp;
 
 import burp.dispatcher.AemFingerPrinterBasedPagesCheck;
 import burp.dispatcher.DispatcherSecurityCheck;
+import burp.sling.AnonymousWriteCheck;
 import burp.sling.ErrorPagePlatformInfoLeakage;
 
 /**
@@ -39,5 +40,8 @@ public class BurpExtender implements IBurpExtender {
 
         final ErrorPagePlatformInfoLeakage errorPagePlatformInfoLeakage = new ErrorPagePlatformInfoLeakage(this.callbacks);
         callbacks.registerScannerCheck(errorPagePlatformInfoLeakage);
+
+        final AnonymousWriteCheck anonymousWriteCheck = new AnonymousWriteCheck(this.callbacks);
+        callbacks.registerScannerCheck(anonymousWriteCheck);
     }
 }
