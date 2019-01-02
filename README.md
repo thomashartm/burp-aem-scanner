@@ -18,8 +18,10 @@ The burp extension currently supports the following features:
 | Check  | Type  |  Description |
 |---|---|---|
 |AEM Fingerprint|passive| Checks if any page exposes information which clearly identifies the system as Adobe AEM |
-|Content Grapping Check|active| Verifies if the dispatcher configuration is vulnerable to information leakage and exposes critical information |
-|Dispatcher Security Check|active| Checks if administrative or dangerous features are exposed to the ouside world |
+|Platform information leakage check|passive| Checks if error pages disclose information about the current platform |
+|Page Meta Data Grapping check|active| Verifies if the dispatcher configuration is vulnerable to information leakage and exposes critical information |
+|DebugFilter check|active| Verifies if the AEM debug filter is active |
+|Dispatcher Security check|active| Checks if administrative or dangerous features are exposed to the ouside world |
 
 # How to build
 Execute the maven build in the root of the package.
