@@ -5,7 +5,6 @@ import burp.aempagescan.impl.DebugParamScan;
 import burp.aempagescan.impl.PageMetaDataGrappingScan;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

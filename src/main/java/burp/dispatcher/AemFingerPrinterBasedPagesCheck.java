@@ -8,10 +8,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Passive check which verifies if a page is an AEM delivered page.
+ */
 public class AemFingerPrinterBasedPagesCheck implements ConsolidatingScanner {
 
     private static final String AEM_FINGERPRINTER_MATCH = "Adobe AEM fingerprint detected";
