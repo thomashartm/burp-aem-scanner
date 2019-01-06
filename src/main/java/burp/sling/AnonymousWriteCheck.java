@@ -1,6 +1,7 @@
 package burp.sling;
 
 import burp.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,28 +40,31 @@ public class AnonymousWriteCheck implements ConsolidatingScanner, WithIssueBuild
     public List<IScanIssue> doActiveScan(final IHttpRequestResponse iHttpRequestResponse,
             final IScannerInsertionPoint iScannerInsertionPoint) {
         final List<IScanIssue> results = new ArrayList<>();
-        final IHttpService httpService = iHttpRequestResponse.getHttpService();
-        try {
-            final URL targetUrl = new URL(httpService.getProtocol(), httpService.getHost(), httpService.getPort(),
-                    "/content/usergenerated/mytestnode");
-            byte[] baseGetRequest = this.helpers.buildHttpRequest(targetUrl);
-            byte[] postRequest = this.helpers.toggleRequestMethod(baseGetRequest);
+        if (iScannerInsertionPoint.getInsertionPointType() == IScannerInsertionPoint.INS_URL_PATH_FILENAME) {
+            final IHttpService httpService = iHttpRequestResponse.getHttpService();
+            try {
+                final URL targetUrl = new URL(httpService.getProtocol(), httpService.getHost(), httpService.getPort(),
+                        "/content/usergenerated/mytestnode");
+                byte[] baseGetRequest = this.helpers.buildHttpRequest(targetUrl);
+                byte[] postRequest = this.helpers.toggleRequestMethod(baseGetRequest);
 
-            final IHttpRequestResponse requestResponse = this.callbacks.makeHttpRequest(httpService, postRequest);
-            final IResponseInfo responseInfo = this.helpers.analyzeResponse(requestResponse.getResponse());
-            final short statusCode = responseInfo.getStatusCode();
-            callbacks.printOutput(String.format("Active Scan: %s with statuscode %s", targetUrl.toString(), String.valueOf(statusCode)));
+                final IHttpRequestResponse requestResponse = this.callbacks.makeHttpRequest(httpService, postRequest);
+                final IResponseInfo responseInfo = this.helpers.analyzeResponse(requestResponse.getResponse());
+                final short statusCode = responseInfo.getStatusCode();
+                callbacks
+                        .printOutput(String.format("Active Scan: %s with statuscode %s", targetUrl.toString(), String.valueOf(statusCode)));
 
-            if (statusCode == 200) {
-                final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, ISSUE_NAME,
-                        "Anonymous write access to the repository is enabled.");
-                builder.withUrl(targetUrl);
-                builder.withSeverityMedium();
-                builder.withCertainConfidence();
-                results.add(builder.build());
+                if (statusCode == 200) {
+                    final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, ISSUE_NAME,
+                            "Anonymous write access to the repository is enabled.");
+                    builder.withUrl(targetUrl);
+                    builder.withSeverityMedium();
+                    builder.withCertainConfidence();
+                    results.add(builder.build());
+                }
+            } catch (MalformedURLException e) {
+                callbacks.printError(e.toString());
             }
-        } catch (MalformedURLException e) {
-            callbacks.printError(e.toString());
         }
         return results;
     }

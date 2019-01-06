@@ -4,10 +4,8 @@ import burp.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The AEM Dispatcher should restrict external access to critical and administrative resources as much as possible.
@@ -19,10 +17,11 @@ import java.util.Optional;
  * @author thomas.hartmann@netcentric.biz
  * @since 12/2018
  */
-public class DispatcherSecurityCheck implements ConsolidatingScanner, WithIssueBuilder {
+public class DispatcherSecurityCheck implements ConsolidatingScanner, WithIssueBuilder, IScannerInsertionPointProvider {
 
     private final IBurpExtenderCallbacks callbacks;
     private IExtensionHelpers helpers;
+    final CopyOnWriteArrayList<IScanIssue> reportableIssues = new CopyOnWriteArrayList<>();
 
     public DispatcherSecurityCheck(final IBurpExtenderCallbacks callbacks) {
         this.callbacks = callbacks;
@@ -37,7 +36,34 @@ public class DispatcherSecurityCheck implements ConsolidatingScanner, WithIssueB
     @Override
     public List<IScanIssue> doActiveScan(final IHttpRequestResponse baseRequestResponse,
             final IScannerInsertionPoint iScannerInsertionPoint) {
-        final List<IScanIssue> reportableIssues = new ArrayList<>();
+
+        if (iScannerInsertionPoint.getInsertionPointType() == IScannerInsertionPoint.INS_URL_PATH_FILENAME && !this.reportableIssues
+                .isEmpty()) {
+            List<IScanIssue> reportedResults = new ArrayList<>();
+            reportedResults.addAll(this.reportableIssues);
+            // clean up old findings
+            this.reportableIssues.clear();
+
+            return reportedResults;
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<IScannerInsertionPoint> getInsertionPoints(IHttpRequestResponse baseRequestResponse) {
+        /**
+         * TODO Refactor Burp API limitation.
+         * - Is there any other way to simply say "each active scanned HTTP requested once per scan"?
+         *
+         * Right now the API does not allow it:
+         * https://support.portswigger.net/customer/en/portal/questions/16776337-confusion-on-insertionpoints-active-scan-module?new=16776337
+         *
+         * So we go for the same way as the UploadScanner extension and
+         * misuse the getInsertionPoints method which is only called once per scan by coincidence
+         * See https://github.com/PortSwigger/upload-scanner/blob/master/UploadScanner.py
+         */
+
+        this.callbacks.printOutput("Dispatcher getInsertionPoints called " + baseRequestResponse.toString());
 
         final IHttpService httpService = baseRequestResponse.getHttpService();
         try {
@@ -49,16 +75,15 @@ public class DispatcherSecurityCheck implements ConsolidatingScanner, WithIssueB
                     final Optional<ScanIssue> optionalIssue = this.evaluateResponse(url, vulnerability, responseInfo);
 
                     if (optionalIssue.isPresent()) {
-                        reportableIssues.add(optionalIssue.get());
+                        this.reportableIssues.add(optionalIssue.get());
                     }
-
                 }
             }
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            this.callbacks.printError(e.toString());
         }
 
-        return reportableIssues;
+        return Collections.emptyList();
     }
 
     private IHttpRequestResponse sendRequestsToDispatcher(final URL url, final IHttpService httpService) {

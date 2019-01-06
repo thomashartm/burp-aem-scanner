@@ -33,7 +33,6 @@ public class BurpExtender implements IBurpExtender {
         // register all custom scanner checks
 
         final DispatcherSecurityCheck dispatcherSecurityCheck = new DispatcherSecurityCheck(this.callbacks);
-        callbacks.registerScannerCheck(dispatcherSecurityCheck);
 
         final AemFingerPrinterBasedPagesCheck contentGrabbingCheck = new AemFingerPrinterBasedPagesCheck(this.callbacks);
         callbacks.registerScannerCheck(contentGrabbingCheck);
@@ -43,5 +42,7 @@ public class BurpExtender implements IBurpExtender {
 
         final AnonymousWriteCheck anonymousWriteCheck = new AnonymousWriteCheck(this.callbacks);
         callbacks.registerScannerCheck(anonymousWriteCheck);
+
+        callbacks.registerScannerInsertionPointProvider(dispatcherSecurityCheck);
     }
 }
