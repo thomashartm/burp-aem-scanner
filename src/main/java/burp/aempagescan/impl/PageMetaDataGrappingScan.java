@@ -22,7 +22,7 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 12/2018
  */
-public class PageMetaDataGrappingScan implements ActiveAemPageScan, WithIssueBuilder, WithStatusCode {
+public class PageMetaDataGrappingScan implements ActiveAemPageScan, WithStatusCode, WithIssueBuilder {
 
     private static final String ISSUE_NAME = "AEM default renderers enabled.";
 

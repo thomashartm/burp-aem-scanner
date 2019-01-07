@@ -1,4 +1,4 @@
-package burp.sling;
+package burp.aempagescan;
 
 import burp.*;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 12/2018
  */
-public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner, WithIssueBuilder {
+public class ErrorPagePlatformInfoLeakageScanner implements ConsolidatingScanner, WithIssueBuilder {
 
     public static final String ERROR_PAGE_INFO_LEAKAGE = "Server platform information disclosed";
 
@@ -26,7 +26,7 @@ public class ErrorPagePlatformInfoLeakage implements ConsolidatingScanner, WithI
     /**
      * @param callbacks
      */
-    public ErrorPagePlatformInfoLeakage(final IBurpExtenderCallbacks callbacks) {
+    public ErrorPagePlatformInfoLeakageScanner(final IBurpExtenderCallbacks callbacks) {
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
     }

@@ -1,8 +1,6 @@
-package burp.dispatcher;
+package burp.aempagescan;
 
 import burp.*;
-import burp.aempagescan.ActiveAemPageScan;
-import burp.aempagescan.AemPageScanFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -14,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Passive check which verifies if a page is an AEM delivered page.
  */
-public class AemFingerPrinterBasedPagesCheck implements ConsolidatingScanner {
+public class AemFingerPrinterBasedPagesScanner implements ConsolidatingScanner, WithIssueBuilder {
 
     private static final String AEM_FINGERPRINTER_MATCH = "Adobe AEM fingerprint detected";
 
@@ -30,7 +28,7 @@ public class AemFingerPrinterBasedPagesCheck implements ConsolidatingScanner {
 
     private IExtensionHelpers helpers;
 
-    public AemFingerPrinterBasedPagesCheck(final IBurpExtenderCallbacks callbacks) {
+    public AemFingerPrinterBasedPagesScanner(final IBurpExtenderCallbacks callbacks) {
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
         this.fingerPrintingKeywords = Arrays.asList(AEM_FINGERPRINTING_TOKENS);
@@ -106,5 +104,10 @@ public class AemFingerPrinterBasedPagesCheck implements ConsolidatingScanner {
         });
 
         return results;
+    }
+
+    @Override
+    public IExtensionHelpers getHelpers() {
+        return this.helpers;
     }
 }
