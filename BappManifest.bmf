@@ -5,7 +5,7 @@ RepoName: aem-security-scanner
 ScreenVersion: 1.0.0
 SerialVersion: 1
 MinPlatformVersion: 0
-ProOnly: True
+ProOnly: false
 Author: Thomas Hartmann
 ShortDescription: Validates a system which is supposed to be an instance of Adobe Experience Manager (AEM) and verifies if certain known issues such as known misconfigurations are present.
 EntryPoint:

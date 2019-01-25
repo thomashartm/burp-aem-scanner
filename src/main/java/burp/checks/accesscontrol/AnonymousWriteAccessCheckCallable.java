@@ -1,6 +1,7 @@
-package burp.executeonce;
+package burp.checks.accesscontrol;
 
 import burp.*;
+import burp.checks.SecurityCheck;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,25 +14,34 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 12/2018
  */
-public class AnonymousWriteModule implements ScannerModule {
+public class AnonymousWriteAccessCheckCallable implements SecurityCheck {
 
     private static final String ISSUE_NAME = "Anonymous write access is enabled";
-    public static final String TESTNODE_CONTENT_USERGENERATED = "/content/usergenerated/mytestnode";
 
-    private final IBurpExtenderCallbacks callbacks;
+    private static final String TESTNODE_CONTENT_USERGENERATED = "/content/usergenerated/mytestnode";
 
-    private final IExtensionHelpers helpers;
+    private final IHttpRequestResponse baseMessage;
+
+    private final BurpHelperDto helperDto;
 
     /**
-     * @param callbacks
+     * Constructor
+     * @param helperDto
+     * @param baseMessage
      */
-    public AnonymousWriteModule(final IBurpExtenderCallbacks callbacks) {
-        this.callbacks = callbacks;
-        this.helpers = callbacks.getHelpers();
+    public AnonymousWriteAccessCheckCallable(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
+        this.helperDto = helperDto;
+        this.baseMessage = baseMessage;
     }
 
     public IExtensionHelpers getHelpers() {
-        return this.helpers;
+        return this.helperDto.getHelpers();
+    }
+
+    @Override
+    public Boolean call() throws Exception {
+        scan(baseMessage).forEach(iScanIssue -> this.helperDto.getCallbacks().addScanIssue(iScanIssue));
+        return true;
     }
 
     @Override
@@ -42,21 +52,21 @@ public class AnonymousWriteModule implements ScannerModule {
         try {
             final URL targetUrl = new URL(httpService.getProtocol(), httpService.getHost(), httpService.getPort(),
                     TESTNODE_CONTENT_USERGENERATED);
-            byte[] baseGetRequest = this.helpers.buildHttpRequest(targetUrl);
-            byte[] postRequest = this.helpers.toggleRequestMethod(baseGetRequest);
+            byte[] baseGetRequest = getHelpers().buildHttpRequest(targetUrl);
+            byte[] postRequest = getHelpers().toggleRequestMethod(baseGetRequest);
 
-            final IHttpRequestResponse requestResponse = this.callbacks.makeHttpRequest(httpService, postRequest);
-            final IResponseInfo responseInfo = this.helpers.analyzeResponse(requestResponse.getResponse());
+            final IHttpRequestResponse requestResponse = this.helperDto.getCallbacks().makeHttpRequest(httpService, postRequest);
+            final IResponseInfo responseInfo = getHelpers().analyzeResponse(requestResponse.getResponse());
             final short statusCode = responseInfo.getStatusCode();
 
-            this.callbacks.printOutput(String.format("Active Scan: %s with statuscode %s", targetUrl.toString(), String.valueOf(statusCode)));
+            this.helperDto.getCallbacks().printOutput(String.format("Access control check: %s with statuscode %s", targetUrl.toString(), String.valueOf(statusCode)));
 
             if (statusCode == 200) {
                 final ScanIssue scanIssue = report(requestResponse, targetUrl);
                 results.add(scanIssue);
             }
         } catch (MalformedURLException e) {
-            this.callbacks.printError(e.toString());
+            this.helperDto.getCallbacks().printError(e.toString());
         }
 
         return results;

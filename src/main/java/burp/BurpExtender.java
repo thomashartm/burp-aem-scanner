@@ -1,9 +1,10 @@
 package burp;
 
-import burp.aempagescan.AemFingerPrinterBasedPagesScanner;
-import burp.executeonce.AnonymousWriteModule;
-import burp.aempagescan.ErrorPagePlatformInfoLeakageScanner;
-import burp.executeonce.ExecuteModulesOnceScanner;
+import burp.ui.AEMSecurityAnalysisMenu;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AEM Security Scanner - BurpExtender. This class registers the scanner checks-
@@ -11,7 +12,7 @@ import burp.executeonce.ExecuteModulesOnceScanner;
  * @author thomas.hartmann@netcentric.biz
  * @since 11/2018
  */
-public class BurpExtender implements IBurpExtender{
+public class BurpExtender implements IBurpExtender, IContextMenuFactory {
 
     private static final String EXTENSION_NAME = "AEM Security Scanner";
 
@@ -30,14 +31,28 @@ public class BurpExtender implements IBurpExtender{
         // set our extension name
         callbacks.setExtensionName(EXTENSION_NAME);
 
+        this.callbacks.registerContextMenuFactory(this);// for menus
+
+
+
         // register all custom scanner checks
 
-        final ErrorPagePlatformInfoLeakageScanner errorPagePlatformInfoLeakage = new ErrorPagePlatformInfoLeakageScanner(this.callbacks);
-        callbacks.registerScannerCheck(errorPagePlatformInfoLeakage);
+        //final ErrorPagePlatformInfoLeakageScanner errorPagePlatformInfoLeakage = new ErrorPagePlatformInfoLeakageScanner(this.callbacks);
+        //callbacks.registerScannerCheck(errorPagePlatformInfoLeakage);
 
         // register as an insertion point provider
-        final ExecuteModulesOnceScanner executeModulesOnceScanner = new ExecuteModulesOnceScanner(this.callbacks);
-        callbacks.registerScannerInsertionPointProvider(executeModulesOnceScanner);
+        //final ExecuteModulesOnceScanner executeModulesOnceScanner = new ExecuteModulesOnceScanner(this.callbacks);
+        //callbacks.registerScannerInsertionPointProvider(executeModulesOnceScanner);
     }
 
+    @Override
+    public List<JMenuItem> createMenuItems(IContextMenuInvocation iContextMenuInvocation) {
+
+        final BurpHelperDto helperDto = new BurpHelperDto(this, this.callbacks, this.helpers, iContextMenuInvocation);
+
+        final List<JMenuItem> menuItems = new ArrayList<>();
+        JMenu dispatcherAnalysisMenu = new AEMSecurityAnalysisMenu(helperDto);
+        menuItems.add(dispatcherAnalysisMenu);
+        return menuItems;
+    }
 }
