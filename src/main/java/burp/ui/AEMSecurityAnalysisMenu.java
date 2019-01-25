@@ -21,11 +21,13 @@ public class AEMSecurityAnalysisMenu extends JMenu {
     public AEMSecurityAnalysisMenu(final BurpHelperDto helperDto) {
 
         this.setText("AEM Actions");
+        final JMenuItem pathBasedCheckItem = new JMenuItem("Dispatcher Path Security checks");
+        pathBasedCheckItem.addActionListener(new SecurityChecklistAnalysisMenuActionListener(helperDto));
+        this.add(pathBasedCheckItem);
 
-        final JMenuItem headerItem = new JMenuItem("Path based security checks");
-        headerItem.addActionListener(new SecurityChecklistAnalysisMenuActionListener(helperDto));
-
-        this.add(headerItem);
+        final JMenuItem misconfigItem = new JMenuItem("AEM Misconfiguration");
+        misconfigItem.addActionListener(new MisconfigurationMenuActionListener(helperDto));
+        this.add(misconfigItem);
     }
 }
 
