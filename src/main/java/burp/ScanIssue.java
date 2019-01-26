@@ -84,7 +84,9 @@ public class ScanIssue implements IScanIssue, Comparable<ScanIssue> {
 
     @Override
     public int compareTo(ScanIssue o) {
-        return getIssueDetail().compareTo(o.getIssueDetail());
+        final boolean areSameIssues = this.getIssueName().equals(o.getIssueName()) && this.getIssueDetail()
+                .equals(o.getIssueDetail());
+        return areSameIssues ? -1 : 0;
     }
 
     @Override

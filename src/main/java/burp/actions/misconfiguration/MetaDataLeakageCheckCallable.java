@@ -21,7 +21,7 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
 
     private static final String ISSUE_NAME = "AEM default renderers enabled.";
 
-    private static final String ISSE_DETAILS = "The page is leaking information which is not supposed to be shared with the outside world. AEM's dispatcher must block access to any URL that leaks metadata. Currently it responds with statuscode 200";
+    private static final String ISSE_DETAILS = "The page is leaking information which is not supposed to be shared with the outside world. AEM's dispatcher must block access to any URL that leaks metadata. Currently it responds with statuscode 200 for URl %s";
 
     public static final String ERROR_PAGE_INFO_LEAKAGE = "Server platform information disclosed";
 
@@ -29,7 +29,7 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
 
     private static final String CONFIDENTIAL_DATA_LEAKAGE = "Authentication information leakage";
 
-    private static final String CONFIDENTIAL_DATA_LEAKAGE_DETAILS = "Username or credential information leaked. Please check the response for JCR properties whoch should be kept private. Found property %s in response.";
+    private static final String CONFIDENTIAL_DATA_LEAKAGE_DETAILS = "Username or credential information leaked. Please check the response for JCR properties whoch should be kept private. Found property %s with value %s in response.";
 
     private static final String[] CONTENT_GRAPPING_SUFFIXES = new String[] {
             "xxyzkgv.html", ".tidy.-100.json", ".-1.json", ".infinity.json", ".1.json", ".10.json", ".tidy.blubber.json", ".blubber.json",
@@ -60,7 +60,8 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
 
     @Override
     public Boolean call() throws Exception {
-        scan(baseMessage).forEach(iScanIssue -> this.helperDto.getCallbacks().addScanIssue(iScanIssue));
+        final List<IScanIssue> issues = scan(baseMessage);
+        issues.forEach(iScanIssue -> this.helperDto.getCallbacks().addScanIssue(iScanIssue));
         return true;
     }
 
@@ -89,7 +90,7 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
 
     private List<IScanIssue> scanUrlMutations(final IHttpService httpService, final URL baseAemUrl, final List<URL> mutations) {
         final List<IScanIssue> results = new ArrayList<>();
-        this.helperDto.getCallbacks().printOutput("Metadata check for mutations %s " + StringUtils.join(mutations, ";"));
+        this.helperDto.getCallbacks().printOutput(String.format("Metadata check for mutations %s ", StringUtils.join(mutations, ";")));
         for (final URL mutation : mutations) {
 
             final byte[] request = this.helperDto.getHelpers().buildHttpRequest(mutation);
@@ -99,46 +100,62 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
             final short statusCode = responseInfo.getStatusCode();
 
             if (isInRange(statusCode, 200, 299)) {
-                this.helperDto.getCallbacks().printOutput("Metadata check for mutation %s had a positive match" + mutation.toString());
-                final IScanIssue iScanIssue = checkForCredentialLeakage(requestResponse)
-                        .orElse(createMetadataLeakageIssue(requestResponse, baseAemUrl));
+                this.helperDto.getCallbacks()
+                        .printOutput(String.format("Metadata check for mutation %s had a positive match", mutation.toString()));
+                // we have metadata leakage anyway ...
+                results.add(createMetadataLeakageIssue(requestResponse, baseAemUrl, mutation));
 
-                results.add(iScanIssue);
+                // now we check if we leak any credentials for the JSON renditions of our pages
+                if (mutation.toString().contains(".json")) {
+                    final List<IScanIssue> credentialIssues = checkForCredentialLeakage(requestResponse);
+                    if (credentialIssues.size() > 0) {
+                        results.addAll(credentialIssues);
+                    }
+                }
+
             } else if (isInRange(statusCode, 400, 500)) {
-                this.helperDto.getCallbacks().printOutput("Error leakage check for mutation %s had a positive match" + mutation.toString());
+                this.helperDto.getCallbacks()
+                        .printOutput(String.format("Error leakage check for mutation %s had a positive match", mutation.toString()));
                 checkForDataLeakage(requestResponse).ifPresent(iScanIssue -> results.add(iScanIssue));
             }
         }
         return results;
     }
 
-    private Optional<IScanIssue> checkForCredentialLeakage(final IHttpRequestResponse requestResponse) {
+    private List<IScanIssue> checkForCredentialLeakage(final IHttpRequestResponse requestResponse) {
         final String responseMessage = this.helperDto.getHelpers().bytesToString(requestResponse.getResponse());
 
+        final List<IScanIssue> results = new ArrayList<>();
         for (final String property : CREDENTIAL_JCR_PROPERTIES) {
-            int credentialPropertyMatch = StringUtils.indexOfAny(responseMessage, property);
+            int credentialPropertyMatch = StringUtils.indexOf(responseMessage, property);
             if (credentialPropertyMatch > 0) {
 
-                final String details = String.format(CONFIDENTIAL_DATA_LEAKAGE_DETAILS, property);
+                final String value = extractRelevantSnippet(responseMessage, property).orElse("");
+                final String details = String.format(CONFIDENTIAL_DATA_LEAKAGE_DETAILS, property, value);
 
                 final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, CONFIDENTIAL_DATA_LEAKAGE, details);
-                // for now it is only information
-
                 final IRequestInfo requestInfo = this.helperDto.getHelpers()
                         .analyzeRequest(requestResponse.getHttpService(), requestResponse.getRequest());
                 builder.withUrl(requestInfo.getUrl());
                 builder.withSeverityHigh();
                 builder.withCertainConfidence();
 
-                return Optional.of(builder.build());
+                results.add(builder.build());
             }
         }
-        return Optional.empty();
+        return results;
     }
 
-    private IScanIssue createMetadataLeakageIssue(final IHttpRequestResponse requestResponse, final URL baseAemUrl) {
+    private Optional<String> extractRelevantSnippet(final String response, final String identifiedToken) {
+        int credentialKeyIndex = StringUtils.indexOf(response, identifiedToken);
+        final String remainingMessage = StringUtils.substring(response, credentialKeyIndex);
+        return Optional.of(StringUtils.substringBefore(remainingMessage, ","));
+    }
+
+    private IScanIssue createMetadataLeakageIssue(final IHttpRequestResponse requestResponse, final URL baseAemUrl, final URL mutation) {
         // AEM is responding to the message, now we need to evaluate the response
-        final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, ISSUE_NAME, ISSE_DETAILS);
+        final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, ISSUE_NAME,
+                String.format(ISSE_DETAILS, mutation.toString()));
         // we use the original URL as we else spam the target tree with all mutations.
         builder.withUrl(baseAemUrl);
         builder.withSeverityMedium();
@@ -150,7 +167,7 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
         final String responseMessage = this.helperDto.getHelpers().bytesToString(requestResponse.getResponse());
         final String[] addresses = StringUtils.substringsBetween(responseMessage, "<address>", "</address>");
 
-        if (addresses.length > 0) {
+        if (addresses != null && addresses.length > 0) {
             final String details = String.format(ERROR_PAGE_INFO_DETAILS, StringUtils.join(addresses, ","));
             final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, ERROR_PAGE_INFO_LEAKAGE, details);
             // for now it is only information
