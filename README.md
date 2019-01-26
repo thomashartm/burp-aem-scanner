@@ -24,8 +24,11 @@ The burp extension currently supports the following features:
 |Dispatcher Security check| Checks if administrative or dangerous features are exposed to the outside world |
 
 # How to use
+Select one or multiple pages from within the Target sitemap. Then click on the relevant security check categories whoch you are planning to execute.
 
-TODO
+![AEM Actions Menu](https://github.com/thomashartm/burp-aem-scanner/blob/master/docs/aem-sec-check.jpg "AEM Actions")
+
+The security checks will be executed by a thread pool in the background to check progress, please look into the extender output.
 
 # How to build
 Execute the maven build in the root of the package.
