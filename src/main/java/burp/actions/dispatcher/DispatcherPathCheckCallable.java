@@ -1,7 +1,7 @@
-package burp.checks.dispatcher;
+package burp.actions.dispatcher;
 
 import burp.*;
-import burp.checks.SecurityCheck;
+import burp.actions.SecurityCheck;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,7 +15,7 @@ import java.util.Optional;
  * @author thomas.hartmann@netcentric.biz
  * @since 01/2019
  */
-public class DispatcherPathCheckerCallable implements SecurityCheck {
+public class DispatcherPathCheckCallable implements SecurityCheck {
 
     private final IHttpRequestResponse baseMessage;
 
@@ -26,7 +26,7 @@ public class DispatcherPathCheckerCallable implements SecurityCheck {
      * @param helperDto
      * @param baseMessage
      */
-    public DispatcherPathCheckerCallable(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
+    public DispatcherPathCheckCallable(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
         this.helperDto = helperDto;
         this.baseMessage = baseMessage;
     }

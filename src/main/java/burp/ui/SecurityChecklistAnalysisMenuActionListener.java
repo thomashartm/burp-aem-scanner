@@ -1,8 +1,8 @@
 package burp.ui;
 
 import burp.*;
-import burp.checks.accesscontrol.AnonymousWriteAccessCheckCallable;
-import burp.checks.dispatcher.DispatcherPathCheckerCallable;
+import burp.actions.accesscontrol.AnonymousWriteAccessCheckCallable;
+import burp.actions.dispatcher.DispatcherPathCheckCallable;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -52,7 +51,8 @@ public class SecurityChecklistAnalysisMenuActionListener implements ActionListen
 
         // now we start crafting requests for our vulnerabilities
         for (final Map.Entry<String, IHttpRequestResponse> baseMessage : baseMessages.entrySet()) {
-            pool.submit(new DispatcherPathCheckerCallable(this.helperDto, baseMessage.getValue()));
+            pool.submit(new DispatcherPathCheckCallable(this.helperDto, baseMessage.getValue()));
+            pool.submit(new AnonymousWriteAccessCheckCallable(this.helperDto, baseMessage.getValue()));
             this.callbacks.printOutput("Dispatcher checklist related callables submitted for execution");
         }
     }

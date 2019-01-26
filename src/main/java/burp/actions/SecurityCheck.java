@@ -1,8 +1,9 @@
-package burp.checks;
+package burp.actions;
 
 import burp.IHttpRequestResponse;
 import burp.IScanIssue;
-import burp.WithIssueBuilder;
+import burp.util.WithIssueBuilder;
+import burp.util.WithComparator;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -13,7 +14,7 @@ import java.util.concurrent.Callable;
  * @author thomas.hartmann@netcentric.biz
  * @since 01/2019
  */
-public interface SecurityCheck extends WithIssueBuilder, Callable<Boolean> {
+public interface SecurityCheck extends WithIssueBuilder, WithComparator, Callable<Boolean> {
 
     /**
      * Executes the scan. Can be run outside of the active or passive scanner as we need to be able to execute exactly once only.
@@ -21,17 +22,4 @@ public interface SecurityCheck extends WithIssueBuilder, Callable<Boolean> {
      * @return
      */
     List<IScanIssue> scan(final IHttpRequestResponse baseRequestResponse);
-
-    /**
-     * Upper and lower bound status code checks
-     *
-     * @param value      Current value
-     * @param lowerBound lower bound
-     * @param upperBound upper bound
-     * @return True if within.
-     */
-    default boolean isInRange(short value, int lowerBound, int upperBound) {
-        final Integer intval = Integer.valueOf(value);
-        return lowerBound <= intval && intval <= upperBound;
-    }
 }

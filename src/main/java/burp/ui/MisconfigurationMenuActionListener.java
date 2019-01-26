@@ -3,8 +3,8 @@ package burp.ui;
 import burp.BurpHelperDto;
 import burp.IHttpRequestResponse;
 import burp.IHttpService;
-import burp.checks.accesscontrol.AnonymousWriteAccessCheckCallable;
-import burp.checks.misconfiguration.DebugFilterCallable;
+import burp.actions.misconfiguration.DebugFilterActiveCheckCallable;
+import burp.actions.misconfiguration.MetaDataLeakageCheckCallable;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,15 +39,14 @@ public class MisconfigurationMenuActionListener implements ActionListener {
         this.helperDto.getCallbacks().printOutput("AEMSecurityAnalysisMenuActionListener performed");
 
         final IHttpRequestResponse[] messages = this.helperDto.getiContextMenuInvocation().getSelectedMessages();
-        final Map<String, IHttpRequestResponse> baseMessages = deDublicateByProtocolHostPort(messages);
 
         final ExecutorService pool = Executors.newFixedThreadPool(10);
 
         // now we start crafting requests for our vulnerabilities
-        for (final Map.Entry<String, IHttpRequestResponse> baseMessage : baseMessages.entrySet()) {
-            pool.submit(new DebugFilterCallable(this.helperDto, baseMessage.getValue()));
-            pool.submit(new AnonymousWriteAccessCheckCallable(this.helperDto, baseMessage.getValue()));
-            this.helperDto.getCallbacks().printOutput("Dispatcher checklist related callables submitted for execution");
+        for (final  IHttpRequestResponse baseMessage : messages) {
+            pool.submit(new DebugFilterActiveCheckCallable(this.helperDto, baseMessage));
+            pool.submit(new MetaDataLeakageCheckCallable(this.helperDto, baseMessage));
+            this.helperDto.getCallbacks().printOutput("Misconfiguration related callables submitted for execution");
         }
     }
 

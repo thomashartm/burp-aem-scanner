@@ -1,7 +1,7 @@
-package burp.checks.misconfiguration;
+package burp.actions.misconfiguration;
 
 import burp.*;
-import burp.checks.SecurityCheck;
+import burp.actions.SecurityCheck;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 01/2019
  */
-public class DebugFilterCallable implements SecurityCheck {
+public class DebugFilterActiveCheckCallable implements SecurityCheck {
 
     private static final String ISSUE_NAME = "AEM Debug Filter enabled";
 
@@ -26,7 +26,7 @@ public class DebugFilterCallable implements SecurityCheck {
 
     private final IHttpRequestResponse baseMessage;
 
-    public DebugFilterCallable(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
+    public DebugFilterActiveCheckCallable(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
         this.helperDto = helperDto;
         this.baseMessage = baseMessage;
     }

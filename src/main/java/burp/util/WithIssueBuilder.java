@@ -1,4 +1,6 @@
-package burp;
+package burp.util;
+
+import burp.*;
 
 import java.net.URL;
 import java.util.ArrayList;

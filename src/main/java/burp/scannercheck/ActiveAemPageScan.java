@@ -1,4 +1,4 @@
-package burp.aempagescan;
+package burp.scannercheck;
 
 import burp.IHttpRequestResponse;
 import burp.IScanIssue;

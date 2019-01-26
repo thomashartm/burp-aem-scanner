@@ -9,19 +9,23 @@ The Burp AEM Security Scanner is a burp extension providing support for a number
 and evaluates typical AEM and Dispatcher misconfigurations. 
 
 ## Burp Version
-The extension uses the active scanning capabilities and therefore requires Burp Pro
+The extension uses is triggered through a context menu extension and therefore does not require the active scanner.
 
 ## Supported Features
 
 The burp extension currently supports the following features:
 
-| Check  | Type  |  Description |
-|---|---|---|
-|AEM Fingerprint|passive| Checks if any page exposes information which clearly identifies the system as Adobe AEM |
-|Platform information leakage check|passive| Checks if error pages disclose information about the current platform |
-|Page Meta Data Grapping check|active| Verifies if the dispatcher configuration is vulnerable to information leakage and exposes critical information |
-|DebugFilter check|active| Verifies if the AEM debug filter is active |
-|Dispatcher Security check|active| Checks if administrative or dangerous features are exposed to the ouside world |
+| Check  | Description |
+|---|---|
+|AEM Fingerprinting| Checks if any page exposes information which clearly identifies the system as Adobe AEM |
+|Platform information leakage check| Checks if error pages disclose information about the current platform |
+|Page Meta Data Grapping check| Verifies if the configuration is vulnerable to information leakage and exposes critical information such as credentials|
+|DebugFilter check| Verifies if the AEM debug filter is active |
+|Dispatcher Security check| Checks if administrative or dangerous features are exposed to the outside world |
+
+# How to use
+
+TODO
 
 # How to build
 Execute the maven build in the root of the package.

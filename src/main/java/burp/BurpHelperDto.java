@@ -1,25 +1,26 @@
 package burp;
 
-import burp.BurpExtender;
-import burp.IBurpExtenderCallbacks;
-import burp.IContextMenuInvocation;
-import burp.IExtensionHelpers;
-
 /**
- * Transports all relevant objects to be consumed by menu items
+ * Transports all relevant objects to be consumed actions triggered from within the scanner
  *
  * @author thomas.hartmann@netcentric.biz
  * @since 01/2019
  */
 public class BurpHelperDto {
 
-    BurpExtender extender;
-    IBurpExtenderCallbacks callbacks;
-    IExtensionHelpers helpers;
-    IContextMenuInvocation iContextMenuInvocation;
+    private BurpExtender extender;
+    private IBurpExtenderCallbacks callbacks;
+    private IExtensionHelpers helpers;
+    private IContextMenuInvocation iContextMenuInvocation;
 
-    public BurpHelperDto(BurpExtender extender, IBurpExtenderCallbacks callbacks, IExtensionHelpers helpers,
-            IContextMenuInvocation iContextMenuInvocation) {
+    public BurpHelperDto(final IBurpExtenderCallbacks callbacks){
+        this.callbacks = callbacks;
+        this.helpers = callbacks.getHelpers();
+        this.extender = null;
+        this.iContextMenuInvocation = null;
+    }
+
+    public BurpHelperDto(final BurpExtender extender, final IBurpExtenderCallbacks callbacks, final IExtensionHelpers helpers, final IContextMenuInvocation iContextMenuInvocation) {
         this.extender = extender;
         this.callbacks = callbacks;
         this.helpers = helpers;

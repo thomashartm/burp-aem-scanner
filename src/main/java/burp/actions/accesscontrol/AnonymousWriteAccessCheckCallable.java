@@ -1,7 +1,7 @@
-package burp.checks.accesscontrol;
+package burp.actions.accesscontrol;
 
 import burp.*;
-import burp.checks.SecurityCheck;
+import burp.actions.SecurityCheck;
 
 import java.net.MalformedURLException;
 import java.net.URL;

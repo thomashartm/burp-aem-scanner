@@ -1,6 +1,7 @@
-package burp.aempagescan;
+package burp.scannercheck;
 
 import burp.*;
+import burp.util.WithIssueBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
