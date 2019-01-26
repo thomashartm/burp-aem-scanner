@@ -32,17 +32,6 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory {
         callbacks.setExtensionName(EXTENSION_NAME);
 
         this.callbacks.registerContextMenuFactory(this);// for menus
-
-
-
-        // register all custom scanner checks
-
-        //final ErrorPagePlatformInfoLeakageScanner errorPagePlatformInfoLeakage = new ErrorPagePlatformInfoLeakageScanner(this.callbacks);
-        //callbacks.registerScannerCheck(errorPagePlatformInfoLeakage);
-
-        // register as an insertion point provider
-        //final ExecuteModulesOnceScanner executeModulesOnceScanner = new ExecuteModulesOnceScanner(this.callbacks);
-        //callbacks.registerScannerInsertionPointProvider(executeModulesOnceScanner);
     }
 
     @Override
