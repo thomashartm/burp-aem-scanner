@@ -23,8 +23,6 @@ import java.util.concurrent.Executors;
  */
 public class MisconfigurationMenuActionListener implements ActionListener {
 
-    public static final String BASE_PATH = "/";
-
     private final BurpHelperDto helperDto;
 
     /**
@@ -48,22 +46,5 @@ public class MisconfigurationMenuActionListener implements ActionListener {
             pool.submit(new MetaDataLeakageCheckCallable(this.helperDto, baseMessage));
             this.helperDto.getCallbacks().printOutput("Misconfiguration related callables submitted for execution");
         }
-    }
-
-    private Map<String, IHttpRequestResponse> deDublicateByProtocolHostPort(final IHttpRequestResponse[] messages) {
-        final Map<String, IHttpRequestResponse> baseMessages = new HashMap<>();
-
-        for (final IHttpRequestResponse message : messages) {
-            final IHttpService httpService = message.getHttpService();
-            try {
-                final URL baseUrl = new URL(httpService.getProtocol(), httpService.getHost(), httpService.getPort(), BASE_PATH);
-                this.helperDto.getCallbacks().printOutput(baseUrl.toString());
-                baseMessages.put(baseUrl.toString(), message);
-            } catch (MalformedURLException e) {
-                this.helperDto.getCallbacks().printError("Url format not supported. " + e);
-            }
-        }
-
-        return baseMessages;
     }
 }
