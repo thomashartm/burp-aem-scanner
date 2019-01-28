@@ -6,10 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Verfies the provides URLs by appending a set of extensions and checks wether the requested URLs expose confidential information such as usernames.
@@ -99,7 +96,7 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
             final IResponseInfo responseInfo = this.helperDto.getHelpers().analyzeResponse(requestResponse.getResponse());
             final short statusCode = responseInfo.getStatusCode();
 
-            if (isInRange(statusCode, 200, 299)) {
+            if (isInRange(statusCode, 200, 302)) {
                 this.helperDto.getCallbacks()
                         .printOutput(String.format("Metadata check for mutation %s had a positive match", mutation.toString()));
                 // we have metadata leakage anyway ...
@@ -126,12 +123,15 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
         final String responseMessage = this.helperDto.getHelpers().bytesToString(requestResponse.getResponse());
 
         final List<IScanIssue> results = new ArrayList<>();
-        for (final String property : CREDENTIAL_JCR_PROPERTIES) {
-            int credentialPropertyMatch = StringUtils.indexOf(responseMessage, property);
-            if (credentialPropertyMatch > 0) {
 
-                final String value = extractRelevantSnippet(responseMessage, property).orElse("");
-                final String details = String.format(CONFIDENTIAL_DATA_LEAKAGE_DETAILS, property, value);
+        final byte[] response = requestResponse.getResponse();
+        final IResponseKeywords keywords = this.helperDto.getHelpers()
+                .analyzeResponseKeywords(Arrays.asList(CREDENTIAL_JCR_PROPERTIES), response);
+
+        for (final String property : CREDENTIAL_JCR_PROPERTIES) {
+            final int keywordCount = keywords.getKeywordCount(property, 0);
+            if(keywordCount > 0){
+                final String details = String.format(CONFIDENTIAL_DATA_LEAKAGE_DETAILS, property, 0);
 
                 final ScanIssue.ScanIssueBuilder builder = createIssueBuilder(requestResponse, CONFIDENTIAL_DATA_LEAKAGE, details);
                 final IRequestInfo requestInfo = this.helperDto.getHelpers()
@@ -146,10 +146,27 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
         return results;
     }
 
-    private Optional<String> extractRelevantSnippet(final String response, final String identifiedToken) {
-        int credentialKeyIndex = StringUtils.indexOf(response, identifiedToken);
-        final String remainingMessage = StringUtils.substring(response, credentialKeyIndex);
-        return Optional.of(StringUtils.substringBefore(remainingMessage, ","));
+    private Optional<String> extractRelevantSnippet(final IHttpRequestResponse requestResponse, final String keyword,
+            int count) {
+        IExtensionHelpers helpers = this.helperDto.getHelpers();
+        final byte[] response = requestResponse.getResponse();
+        final IResponseInfo responseInfo = helpers.analyzeResponse(response);
+
+        byte[] keywordBytes = keyword.getBytes();
+        int indexPos = responseInfo.getBodyOffset();
+        for(int i = 0; i < count; i++){
+            int keywordIndex = helpers.indexOf(response, keywordBytes, false, indexPos, response.length);
+            indexPos = indexPos + keywordIndex;
+            // first we get a bigger slice then we slimm it down
+            byte[] keywordSlice = Arrays.copyOfRange(response, keywordIndex, indexPos + 100);
+            final String keywordline = helpers.bytesToString(keywordSlice);
+            final int nextDelimiterIndex = StringUtils.indexOfAny(keywordline, "\n", ",", "\",", "}");
+
+            final String value = StringUtils.substring(keywordline, 0, nextDelimiterIndex);
+            return Optional.of(value);
+        }
+
+        return Optional.empty();
     }
 
     private IScanIssue createMetadataLeakageIssue(final IHttpRequestResponse requestResponse, final URL baseAemUrl, final URL mutation) {
