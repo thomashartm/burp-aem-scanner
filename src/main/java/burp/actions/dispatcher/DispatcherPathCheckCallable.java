@@ -2,6 +2,7 @@ package burp.actions.dispatcher;
 
 import burp.*;
 import burp.actions.SecurityCheck;
+import burp.actions.WithHttpRequests;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,7 +16,7 @@ import java.util.Optional;
  * @author thomas.hartmann@netcentric.biz
  * @since 01/2019
  */
-public class DispatcherPathCheckCallable implements SecurityCheck {
+public class DispatcherPathCheckCallable implements SecurityCheck, WithHttpRequests {
 
     private final IHttpRequestResponse baseMessage;
 
@@ -51,7 +52,7 @@ public class DispatcherPathCheckCallable implements SecurityCheck {
                 for (final URL url : urls) {
                     callbacks.printOutput(String.format("Probing %s with URL %s", vulnerability.getName(), url.toString()));
 
-                    final IHttpRequestResponse responseInfo = this.sendRequestsToDispatcher(url, httpService);
+                    final IHttpRequestResponse responseInfo = this.sendRequest(url, httpService);
                     final Optional<ScanIssue> optionalIssue = this.analyzeResponseForStatusCodes(vulnerability, responseInfo);
                     if (optionalIssue.isPresent()) {
                         reportableIssues.add(optionalIssue.get());
@@ -63,11 +64,6 @@ public class DispatcherPathCheckCallable implements SecurityCheck {
         }
 
         return reportableIssues;
-    }
-
-    private IHttpRequestResponse sendRequestsToDispatcher(final URL url, final IHttpService httpService) {
-        final byte[] request = this.helperDto.getHelpers().buildHttpRequest(url);
-        return this.helperDto.getCallbacks().makeHttpRequest(httpService, request);
     }
 
     Optional<ScanIssue> analyzeResponseForStatusCodes(final DispatcherConfigVulnerability vulnerability,
@@ -100,5 +96,11 @@ public class DispatcherPathCheckCallable implements SecurityCheck {
     @Override
     public IExtensionHelpers getHelpers() {
         return this.helperDto.getHelpers();
+    }
+
+
+    @Override
+    public BurpHelperDto getHelperDto() {
+        return this.helperDto;
     }
 }

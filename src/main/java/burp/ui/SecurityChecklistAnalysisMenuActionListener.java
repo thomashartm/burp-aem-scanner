@@ -22,6 +22,7 @@ import java.util.concurrent.Executors;
 public class SecurityChecklistAnalysisMenuActionListener implements ActionListener {
 
     public static final String BASE_PATH = "/";
+
     private final IContextMenuInvocation invocation;
 
     private final BurpHelperDto helperDto;

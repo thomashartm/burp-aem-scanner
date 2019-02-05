@@ -1,8 +1,13 @@
 package burp.ui;
 
-import burp.*;
+import burp.BurpExtender;
+import burp.BurpHelperDto;
+import burp.IBurpExtenderCallbacks;
+import burp.IExtensionHelpers;
+import burp.actions.dispatcher.GetServletExposed;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 
 /**
  * Triggers the dispatcher analysis event which starts Dispatcher checklist evaluations a hiost
@@ -19,15 +24,17 @@ public class AEMSecurityAnalysisMenu extends JMenu {
     private IExtensionHelpers helpers;
 
     public AEMSecurityAnalysisMenu(final BurpHelperDto helperDto) {
-
         this.setText("AEM Actions");
-        final JMenuItem pathBasedCheckItem = new JMenuItem("Dispatcher Path Security checks");
-        pathBasedCheckItem.addActionListener(new SecurityChecklistAnalysisMenuActionListener(helperDto));
-        this.add(pathBasedCheckItem);
 
-        final JMenuItem misconfigItem = new JMenuItem("AEM Misconfiguration");
-        misconfigItem.addActionListener(new MisconfigurationMenuActionListener(helperDto));
-        this.add(misconfigItem);
+        register("Dispatcher Path Security checks", new SecurityChecklistAnalysisMenuActionListener(helperDto));
+        register("AEM Misconfiguration", new MisconfigurationMenuActionListener(helperDto));
+        register("AEM Default Get Servlet checks", new GenericCheckActionListener(helperDto, GetServletExposed.class));
+    }
+
+    private void register(final String name, final ActionListener actionListener) {
+        final JMenuItem menuItem = new JMenuItem(name);
+        menuItem.addActionListener(actionListener);
+        this.add(menuItem);
     }
 }
 

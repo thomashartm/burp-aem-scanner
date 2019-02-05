@@ -2,8 +2,8 @@ package burp.actions;
 
 import burp.IHttpRequestResponse;
 import burp.IScanIssue;
-import burp.util.WithIssueBuilder;
 import burp.util.WithComparator;
+import burp.util.WithIssueBuilder;
 
 import java.util.List;
 import java.util.concurrent.Callable;
