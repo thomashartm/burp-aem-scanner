@@ -1,8 +1,14 @@
 package burp.ui;
 
-import burp.*;
+import burp.BurpExtender;
+import burp.BurpHelperDto;
+import burp.IBurpExtenderCallbacks;
+import burp.IExtensionHelpers;
+import burp.actions.accesscontrol.WriteAccessPossible;
+import burp.actions.dispatcher.*;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 
 /**
  * Triggers the dispatcher analysis event which starts Dispatcher checklist evaluations a hiost
@@ -19,15 +25,22 @@ public class AEMSecurityAnalysisMenu extends JMenu {
     private IExtensionHelpers helpers;
 
     public AEMSecurityAnalysisMenu(final BurpHelperDto helperDto) {
-
         this.setText("AEM Actions");
-        final JMenuItem pathBasedCheckItem = new JMenuItem("Dispatcher Path Security checks");
-        pathBasedCheckItem.addActionListener(new SecurityChecklistAnalysisMenuActionListener(helperDto));
-        this.add(pathBasedCheckItem);
 
-        final JMenuItem misconfigItem = new JMenuItem("AEM Misconfiguration");
-        misconfigItem.addActionListener(new MisconfigurationMenuActionListener(helperDto));
-        this.add(misconfigItem);
+        register("DefaultGetServlet Exposed Check", new GenericCheckActionListener(helperDto, GetServletExposed.class));
+        register("QueryBuilder Exposed Check", new GenericCheckActionListener(helperDto, QueryBuilderExposed.class));
+        register("GQLQueryServlet Exposed Check", new GenericCheckActionListener(helperDto, GQLServletExposed.class));
+        register("PostServlet Exposed Check", new GenericCheckActionListener(helperDto, PostServletExposed.class));
+        register("LoginStatusServlet Exposed Check", new GenericCheckActionListener(helperDto, LoginStatusServletExposed.class));
+        register("FelixConsole Check", new GenericCheckActionListener(helperDto, LoginStatusServletExposed.class));
+        // permissions related misconfiguration
+        register("AEM WriteAccessCheck", new GenericCheckActionListener(helperDto, WriteAccessPossible.class));
+    }
+
+    private void register(final String name, final ActionListener actionListener) {
+        final JMenuItem menuItem = new JMenuItem(name);
+        menuItem.addActionListener(actionListener);
+        this.add(menuItem);
     }
 }
 

@@ -85,6 +85,22 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
         return Collections.emptyList();
     }
 
+    @Override public String getName() {
+        return null;
+    }
+
+    @Override public String getDescription() {
+        return null;
+    }
+
+    @Override public Severity getSeverity() {
+        return null;
+    }
+
+    @Override public Confidence getConfidence() {
+        return null;
+    }
+
     private List<IScanIssue> scanUrlMutations(final IHttpService httpService, final URL baseAemUrl, final List<URL> mutations) {
         final List<IScanIssue> results = new ArrayList<>();
         this.helperDto.getCallbacks().printOutput(String.format("Metadata check for mutations %s ", StringUtils.join(mutations, ";")));

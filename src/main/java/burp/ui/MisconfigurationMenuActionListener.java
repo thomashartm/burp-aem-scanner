@@ -2,16 +2,11 @@ package burp.ui;
 
 import burp.BurpHelperDto;
 import burp.IHttpRequestResponse;
-import burp.IHttpService;
 import burp.actions.misconfiguration.DebugFilterActiveCheckCallable;
 import burp.actions.misconfiguration.MetaDataLeakageCheckCallable;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,7 +36,7 @@ public class MisconfigurationMenuActionListener implements ActionListener {
         final ExecutorService pool = Executors.newFixedThreadPool(10);
 
         // now we start crafting requests for our vulnerabilities
-        for (final  IHttpRequestResponse baseMessage : messages) {
+        for (final IHttpRequestResponse baseMessage : messages) {
             pool.submit(new DebugFilterActiveCheckCallable(this.helperDto, baseMessage));
             pool.submit(new MetaDataLeakageCheckCallable(this.helperDto, baseMessage));
             this.helperDto.getCallbacks().printOutput("Misconfiguration related callables submitted for execution");

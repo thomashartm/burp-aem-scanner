@@ -69,6 +69,22 @@ public class DebugFilterActiveCheckCallable implements SecurityCheck {
         return Collections.emptyList();
     }
 
+    @Override public String getName() {
+        return null;
+    }
+
+    @Override public String getDescription() {
+        return null;
+    }
+
+    @Override public Severity getSeverity() {
+        return null;
+    }
+
+    @Override public Confidence getConfidence() {
+        return null;
+    }
+
     private boolean cellInfoIsPresent(byte[] response, IResponseInfo responseInfo) {
         return responseInfo.getStatusCode() == 200 && StringUtils
                 .containsAny(this.helperDto.getHelpers().bytesToString(response), CELL_REFERENCE);
