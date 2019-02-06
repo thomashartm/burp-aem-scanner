@@ -1,4 +1,4 @@
-package burp.actions;
+package burp.util;
 
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;

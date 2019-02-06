@@ -2,7 +2,7 @@ package burp.actions.dispatcher;
 
 import burp.*;
 import burp.actions.AbstractUriListDetector;
-import burp.actions.BurpHttpRequest;
+import burp.util.BurpHttpRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
