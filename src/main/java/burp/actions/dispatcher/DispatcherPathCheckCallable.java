@@ -15,6 +15,7 @@ import java.util.Optional;
  *
  * @author thomas.hartmann@netcentric.biz
  * @since 01/2019
+ * @deprecated Will be removed in the near future
  */
 public class DispatcherPathCheckCallable implements SecurityCheck, WithHttpRequests {
 
@@ -23,7 +24,6 @@ public class DispatcherPathCheckCallable implements SecurityCheck, WithHttpReque
     private final BurpHelperDto helperDto;
 
     /**
-     *
      * @param helperDto
      * @param baseMessage
      */
@@ -66,6 +66,22 @@ public class DispatcherPathCheckCallable implements SecurityCheck, WithHttpReque
         return reportableIssues;
     }
 
+    @Override public String getName() {
+        return null;
+    }
+
+    @Override public String getDescription() {
+        return null;
+    }
+
+    @Override public Severity getSeverity() {
+        return null;
+    }
+
+    @Override public Confidence getConfidence() {
+        return null;
+    }
+
     Optional<ScanIssue> analyzeResponseForStatusCodes(final DispatcherConfigVulnerability vulnerability,
             final IHttpRequestResponse requestResponse) {
         final IResponseInfo responseInfo = this.helperDto.getHelpers().analyzeResponse(requestResponse.getResponse());
@@ -97,7 +113,6 @@ public class DispatcherPathCheckCallable implements SecurityCheck, WithHttpReque
     public IExtensionHelpers getHelpers() {
         return this.helperDto.getHelpers();
     }
-
 
     @Override
     public BurpHelperDto getHelperDto() {

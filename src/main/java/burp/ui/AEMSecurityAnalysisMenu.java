@@ -4,7 +4,11 @@ import burp.BurpExtender;
 import burp.BurpHelperDto;
 import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
+import burp.actions.accesscontrol.WriteAccessPossible;
+import burp.actions.dispatcher.GQLServletExposed;
 import burp.actions.dispatcher.GetServletExposed;
+import burp.actions.dispatcher.PostServletExposed;
+import burp.actions.dispatcher.QueryBuilderExposed;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -26,9 +30,13 @@ public class AEMSecurityAnalysisMenu extends JMenu {
     public AEMSecurityAnalysisMenu(final BurpHelperDto helperDto) {
         this.setText("AEM Actions");
 
-        register("Dispatcher Path Security checks", new SecurityChecklistAnalysisMenuActionListener(helperDto));
-        register("AEM Misconfiguration", new MisconfigurationMenuActionListener(helperDto));
-        register("AEM Default Get Servlet checks", new GenericCheckActionListener(helperDto, GetServletExposed.class));
+        register("AEM DefaultGetServlet Exposed Check", new GenericCheckActionListener(helperDto, GetServletExposed.class));
+        register("AEM QueryBuilder Exposed Check", new GenericCheckActionListener(helperDto, QueryBuilderExposed.class));
+        register("AEM GQLQueryServlet Exposed Check", new GenericCheckActionListener(helperDto, GQLServletExposed.class));
+        register("AEM PostServlet Exposed Check", new GenericCheckActionListener(helperDto, PostServletExposed.class));
+
+        // permissions related misconfiguration
+        register("AEM WriteAccessCheck", new GenericCheckActionListener(helperDto, WriteAccessPossible.class));
     }
 
     private void register(final String name, final ActionListener actionListener) {

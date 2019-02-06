@@ -175,6 +175,11 @@ public class ScanIssue implements IScanIssue, Comparable<ScanIssue> {
             return this;
         }
 
+        public ScanIssueBuilder withConfidence(final Confidence confidence) {
+            this.confidence = confidence.getValue();
+            return this;
+        }
+
         public ScanIssueBuilder withSeverityHigh() {
             this.severity = "High";
             return this;

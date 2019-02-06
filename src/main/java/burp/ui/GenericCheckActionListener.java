@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 public class GenericCheckActionListener implements ActionListener {
 
     private final BurpHelperDto helperDto;
-    private final Class<Callable>[] callableTypes;
+    private final Class[] callableTypes;
 
     /**
      * {@link Constructor} for a generic action listener
@@ -29,7 +29,7 @@ public class GenericCheckActionListener implements ActionListener {
      * @param helperDto     The DTO for burp internal functionality
      * @param callableTypes {@link Class}s to create
      */
-    public GenericCheckActionListener(final BurpHelperDto helperDto, final Class<Callable>... callableTypes) {
+    public GenericCheckActionListener(final BurpHelperDto helperDto, final Class... callableTypes) {
         this.helperDto = helperDto;
         this.callableTypes = callableTypes;
     }

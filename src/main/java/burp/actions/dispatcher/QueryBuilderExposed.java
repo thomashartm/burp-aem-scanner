@@ -2,12 +2,13 @@ package burp.actions.dispatcher;
 
 import burp.*;
 import burp.actions.AbstractUriListDetector;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Checks wether information is be exposed via AEM"s DefaultGetServlet.
+ * Checks wether QueryBuilder related servlets expose sensitive information.
  * <p>
  * The burp extension is a port of 0ang3el's hacktivity conference checks.
  * See his presentation and the related aemhackers project
@@ -17,21 +18,25 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class GetServletExposed extends AbstractUriListDetector {
+public class QueryBuilderExposed extends AbstractUriListDetector {
 
-    private static final String ISSUE_NAME = "DefaultGetServlet metadata exposure";
+    private static final String ISSUE_NAME = "QueryBuilder exposure";
 
-    private static final String ISSUE_DESCRIPTION = "Sensitive information might be exposed via AEM 's DefaultGetServlet. "
-            + "Please check the URL's manually. See %s";
+    private static final String ISSUE_DESCRIPTION =
+            "Sensitive information might be exposed via AEMs QueryBuilderServlet or QueryBuilderFeedServlet."
+                    + "%s";
 
-    private static final String[] GET_SERVLET_PATHS = new String[] {
-            "/etc", "/var", "/apps", "/home", "///etc", "///var", "///apps", "///home"
+    private static final String[] SERVLET_PATHS = new String[] {
+            "/bin/querybuilder.json", "/bin/querybuilder.json.servlet",
+            "///bin///querybuilder.json", "///bin///querybuilder.json.servlet",
+            "/bin/querybuilder.feed", "/bin/querybuilder.feed.servlet",
+            "///bin///querybuilder.feed", "///bin///querybuilder.feed.servlet"
     };
 
-    private static final String[] GET_SERVLET_EXTENSIONS = new String[] {
-            ".json", ".1.json", ".4.2.1....json", ".json/a.css", ".json.html", ".json.css",
-            ".json/a.html", ".json/a.png", ".json/a.ico", ".json/b.jpeg", ".json/b.gif",
-            ".json;%0aa.css", ".json;%0aa.png", ".json;%0aa.html", ".json;%0aa.js", ".json/a.js"
+    private static final String[] EXTENSIONS = new String[] {
+            "", ".css", ".ico", ".png", ".gif", ".jpeg", ".html", ".1.json", ".4.2.1...json",
+            "/a.css", "/a.html", "/a.ico", "/a.png", "/a.js", "/a.1.json", "/a.4.2.1...json",
+            ";%0aa.css", ";%0aa.png", ";%0aa.js", ";%0aa.html", ";%0aa.ico"
     };
 
     private static final Severity severity = Severity.HIGH;
@@ -39,12 +44,12 @@ public class GetServletExposed extends AbstractUriListDetector {
     private static final Confidence confidence = Confidence.CERTAIN;
 
     /**
-     * Constructor
+     * {@link java.lang.reflect.Constructor}
      *
      * @param helperDto
      * @param baseMessage
      */
-    public GetServletExposed(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
+    public QueryBuilderExposed(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
         super(helperDto, baseMessage);
     }
 
@@ -55,17 +60,17 @@ public class GetServletExposed extends AbstractUriListDetector {
 
         getHelperDto().getCallbacks().printOutput("StatusCode: " + response.getStatusCode());
 
-        return response.getStatusCode() == 200 && responseBody.contains("jcr:primaryType");
+        return response.getStatusCode() == 200 && StringUtils.containsAny(responseBody, "hits", "<feed>");
     }
 
     @Override
     protected List<String> getPaths() {
-        return Arrays.asList(GET_SERVLET_PATHS);
+        return Arrays.asList(SERVLET_PATHS);
     }
 
     @Override
     protected List<String> getExtensions() {
-        return Arrays.asList(GET_SERVLET_EXTENSIONS);
+        return Arrays.asList(EXTENSIONS);
     }
 
     @Override
