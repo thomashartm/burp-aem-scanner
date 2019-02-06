@@ -1,4 +1,4 @@
-# Burp AEM Security Scanner
+# Burp AEM Security Scanner Extension
 [![Build Status](https://travis-ci.org/thomashartm/burp-aem-scanner.svg?branch=master)](https://travis-ci.org/thomashartm/burp-aem-scanner)
 
 AEM is an enterprise grade content management system used by a variety of high profile companies. 
@@ -10,18 +10,6 @@ and evaluates typical AEM and Dispatcher misconfigurations.
 
 ## Burp Version
 The extension uses is triggered through a context menu extension and therefore does not require the active scanner.
-
-## Supported Features
-
-The burp extension currently supports the following features:
-
-| Check  | Description |
-|---|---|
-|AEM Fingerprinting| Checks if any page exposes information which clearly identifies the system as Adobe AEM |
-|Platform information leakage check| Checks if error pages disclose information about the current platform |
-|Page Meta Data Grapping check| Verifies if the configuration is vulnerable to information leakage and exposes critical information such as credentials|
-|DebugFilter check| Verifies if the AEM debug filter is active |
-|Dispatcher Security check| Checks if administrative or dangerous features are exposed to the outside world |
 
 # How to use
 Select one or multiple pages from within the Target sitemap. Then click on the relevant security check categories whoch you are planning to execute.
