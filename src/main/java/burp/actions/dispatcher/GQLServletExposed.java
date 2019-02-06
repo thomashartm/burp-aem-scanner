@@ -1,7 +1,7 @@
 package burp.actions.dispatcher;
 
 import burp.*;
-import burp.actions.AbstractUriListDetector;
+import burp.actions.AbstractDetector;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class GQLServletExposed extends AbstractUriListDetector {
+public class GQLServletExposed extends AbstractDetector {
 
     private static final String ISSUE_NAME = "GQLServletExposed metadata exposure";
 

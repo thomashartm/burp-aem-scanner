@@ -4,9 +4,11 @@ import burp.BurpHelperDto;
 import burp.IHttpRequestResponse;
 import burp.IHttpService;
 import burp.IResponseInfo;
+import burp.util.BurpHttpRequest;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Adds support for sending http requests.
@@ -26,6 +28,18 @@ public interface WithHttpRequests {
     default IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService) {
         final byte[] request = getHelperDto().getHelpers().buildHttpRequest(url);
         return getHelperDto().getCallbacks().makeHttpRequest(httpService, request);
+    }
+
+    /**
+     * Sends a request
+     *
+     * @param burpHttpRequest
+     * @param httpService
+     * @return IHttpRequestResponse
+     */
+    default IHttpRequestResponse sendRequest(final BurpHttpRequest burpHttpRequest, final IHttpService httpService) {
+        final Optional<byte[]> optional = burpHttpRequest.create();
+        return getHelperDto().getCallbacks().makeHttpRequest(httpService, optional.get());
     }
 
     /**

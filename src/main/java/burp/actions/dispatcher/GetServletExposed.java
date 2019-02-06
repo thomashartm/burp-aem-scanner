@@ -1,7 +1,7 @@
 package burp.actions.dispatcher;
 
 import burp.*;
-import burp.actions.AbstractUriListDetector;
+import burp.actions.AbstractDetector;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class GetServletExposed extends AbstractUriListDetector {
+public class GetServletExposed extends AbstractDetector {
 
     private static final String ISSUE_NAME = "DefaultGetServlet metadata exposure";
 

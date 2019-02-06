@@ -1,8 +1,6 @@
 package burp.actions;
 
 import burp.*;
-import burp.actions.SecurityCheck;
-import burp.actions.WithHttpRequests;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,13 +14,13 @@ import java.util.stream.Collectors;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public abstract class AbstractUriListDetector implements SecurityCheck, WithHttpRequests {
+public abstract class AbstractDetector implements SecurityCheck, WithHttpRequests {
 
     private final IHttpRequestResponse baseMessage;
 
     private final BurpHelperDto helperDto;
 
-    public AbstractUriListDetector(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
+    public AbstractDetector(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
         this.helperDto = helperDto;
         this.baseMessage = baseMessage;
     }
@@ -39,15 +37,15 @@ public abstract class AbstractUriListDetector implements SecurityCheck, WithHttp
 
         final List<IScanIssue> issues = new ArrayList<>();
         if (getExtensions().size() > 0) {
-            createPathMutations(getPaths(), getExtensions()).forEach(createScanConsumer(httpService, issues));
+            createPathMutations(getPaths(), getExtensions()).forEach(providePathConsumer(httpService, issues));
         } else {
-            getPaths().forEach(createScanConsumer(httpService, issues));
+            getPaths().forEach(providePathConsumer(httpService, issues));
         }
 
         return issues;
     }
 
-    private Consumer<String> createScanConsumer(final IHttpService httpService, final List<IScanIssue> issues) {
+    public Consumer<String> providePathConsumer(final IHttpService httpService, final List<IScanIssue> issues) {
         return path -> {
             try {
                 final URL url = new URL(httpService.getProtocol(), httpService.getHost(), httpService.getPort(), path);

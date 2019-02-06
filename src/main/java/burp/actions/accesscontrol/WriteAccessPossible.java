@@ -1,7 +1,7 @@
 package burp.actions.accesscontrol;
 
 import burp.*;
-import burp.actions.AbstractUriListDetector;
+import burp.actions.AbstractDetector;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class WriteAccessPossible extends AbstractUriListDetector {
+public class WriteAccessPossible extends AbstractDetector {
 
     private static final String ISSUE_NAME = "Anonymous write access is enabled";
 
