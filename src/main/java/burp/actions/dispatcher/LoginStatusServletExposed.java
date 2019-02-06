@@ -36,7 +36,7 @@ public class LoginStatusServletExposed extends AbstractDetector {
             "Default credentials detected and can be used to gain access to the system. Credentials found: %s";
 
     private static final String[] SERVLET_PATHS = new String[] {
-            "system/sling/loginstatus", "///system///sling///loginstatus"
+            "/system/sling/loginstatus", "///system///sling///loginstatus"
     };
 
     private static final String[] EXTENSIONS = new String[] {
