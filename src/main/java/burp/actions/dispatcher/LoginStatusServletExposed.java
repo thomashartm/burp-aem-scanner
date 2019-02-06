@@ -40,7 +40,7 @@ public class LoginStatusServletExposed extends AbstractDetector {
     };
 
     private static final String[] EXTENSIONS = new String[] {
-            ".json", ".css", ".ico", ".png", ".gif", ".html", ".js", ".json/a.1.json",
+            "",".json", ".css", ".ico", ".png", ".gif", ".html", ".js", ".json/a.1.json",
             ".json;%0aa.css", ".json;%0aa.html", ".json;%0aa.js", ".json;%0aa.png",
             ".json;%0aa.ico", ".4.2.1...json"
     };

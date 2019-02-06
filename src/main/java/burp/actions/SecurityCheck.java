@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public interface SecurityCheck extends WithIssueBuilder, WithComparator, Callable<Boolean> {
 
-    String PATH_PATTERN = "%s/%s";
+    String PATH_PATTERN = "%s%s";
 
     /**
      * Executes the scan. Can be run outside of the active or passive scanner as we need to be able to execute exactly once only.

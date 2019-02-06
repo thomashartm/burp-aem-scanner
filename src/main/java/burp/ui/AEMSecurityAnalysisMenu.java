@@ -27,12 +27,12 @@ public class AEMSecurityAnalysisMenu extends JMenu {
     public AEMSecurityAnalysisMenu(final BurpHelperDto helperDto) {
         this.setText("AEM Actions");
 
-        register("AEM DefaultGetServlet Exposed Check", new GenericCheckActionListener(helperDto, GetServletExposed.class));
-        register("AEM QueryBuilder Exposed Check", new GenericCheckActionListener(helperDto, QueryBuilderExposed.class));
-        register("AEM GQLQueryServlet Exposed Check", new GenericCheckActionListener(helperDto, GQLServletExposed.class));
-        register("AEM PostServlet Exposed Check", new GenericCheckActionListener(helperDto, PostServletExposed.class));
-        register("AEM LoginStatusServlet Exposed Check", new GenericCheckActionListener(helperDto, LoginStatusServletExposed.class));
-
+        register("DefaultGetServlet Exposed Check", new GenericCheckActionListener(helperDto, GetServletExposed.class));
+        register("QueryBuilder Exposed Check", new GenericCheckActionListener(helperDto, QueryBuilderExposed.class));
+        register("GQLQueryServlet Exposed Check", new GenericCheckActionListener(helperDto, GQLServletExposed.class));
+        register("PostServlet Exposed Check", new GenericCheckActionListener(helperDto, PostServletExposed.class));
+        register("LoginStatusServlet Exposed Check", new GenericCheckActionListener(helperDto, LoginStatusServletExposed.class));
+        register("FelixConsole Check", new GenericCheckActionListener(helperDto, LoginStatusServletExposed.class));
         // permissions related misconfiguration
         register("AEM WriteAccessCheck", new GenericCheckActionListener(helperDto, WriteAccessPossible.class));
     }

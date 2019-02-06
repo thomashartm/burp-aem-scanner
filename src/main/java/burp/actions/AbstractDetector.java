@@ -83,10 +83,14 @@ public abstract class AbstractDetector implements SecurityCheck, WithHttpRequest
         return paths.stream()
                 .map(path -> extensions
                         .stream()
-                        .map(extension -> String.format(PATH_PATTERN, path, extension))
+                        .map(extension -> formatPath(path, extension))
                         .collect(Collectors.toList()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+    }
+
+    public String formatPath(final String path, final String extension){
+        return String.format(PATH_PATTERN, path, extension);
     }
 
     @Override
