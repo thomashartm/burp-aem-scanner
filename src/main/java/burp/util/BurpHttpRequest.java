@@ -7,9 +7,7 @@ import burp.IRequestInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +30,8 @@ public class BurpHttpRequest {
 
     private List<String> headers = new ArrayList<>();
 
+    private Map<String, String> parameters = new LinkedHashMap<>();
+
     private String body;
 
     private byte[] currentRequest;
@@ -45,7 +45,7 @@ public class BurpHttpRequest {
     public Optional<byte[]> create() {
         byte[] baseRequest = null;
 
-        if (headers.size() == 0) {
+        if (headers.size() == 0 || StringUtils.equalsAnyIgnoreCase(getMethod(), "GET")) {
             // create initial request
             baseRequest = this.helpers.buildHttpRequest(url);
 
@@ -54,21 +54,25 @@ public class BurpHttpRequest {
                 baseRequest = addRequestBody(baseRequest);
             }
         } else {
-            baseRequest = postFromBaseMessage(url, this.headers);
+            baseRequest = postMessageFromBaseMessage(url, this.headers);
         }
+        baseRequest = addUrlParameters(baseRequest);
 
         return Optional.ofNullable(baseRequest);
     }
 
     private byte[] addRequestBody(byte[] baseRequest) {
         final String bodyEncoded = this.helpers.urlEncode(body);
+
         final IParameter bodyParam = this.helpers.buildParameter(PARAM_BODY, bodyEncoded, IParameter.PARAM_BODY);
         baseRequest = this.helpers.addParameter(baseRequest, bodyParam);
+
         this.helpers.toggleRequestMethod(baseRequest);
+
         return baseRequest;
     }
 
-    private byte[] postFromBaseMessage(final URL url, final List<String> newHeaders) {
+    private byte[] postMessageFromBaseMessage(final URL url, final List<String> newHeaders) {
         byte[] baseRequest = baseMessage.getRequest();
         IRequestInfo requestInfo = this.helpers.analyzeRequest(baseMessage.getHttpService(), baseRequest);
 
@@ -92,6 +96,14 @@ public class BurpHttpRequest {
         final String bodyEncoded = this.helpers.urlEncode(body);
 
         return this.helpers.buildHttpMessage(headers, this.helpers.stringToBytes(bodyEncoded));
+    }
+
+    private byte[] addUrlParameters(byte[] baseRequest) {
+        for (Map.Entry<String, String> pair : this.parameters.entrySet()) {
+            final IParameter parameter = this.helpers.buildParameter(pair.getKey(), pair.getValue(), IParameter.PARAM_URL);
+            baseRequest = this.helpers.addParameter(baseRequest, parameter);
+        }
+        return baseRequest;
     }
 
     private String[] createHeaderFilterList(List<String> newHeaders) {
@@ -149,5 +161,9 @@ public class BurpHttpRequest {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public void addParameter(final String key, final String value) {
+        this.parameters.put(key, value);
     }
 }

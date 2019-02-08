@@ -1,4 +1,4 @@
-package burp.actions.dispatcher;
+package burp.actions.misconfiguration;
 
 import burp.*;
 import burp.actions.AbstractDetector;
@@ -6,11 +6,12 @@ import burp.util.BurpHttpRequest;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Checks if the system console is accessible and providing attack surface.
+ * WCMDebugFilter
  *
  * The burp extension is a port of 0ang3el's hacktivity conference checks.
  * See his presentation and the related aemhackers project
@@ -20,38 +21,42 @@ import java.util.Optional;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class FelixSystemConsoleExpose extends AbstractDetector {
+public class DebugFilterDetector extends AbstractDetector {
 
-    private static final String ISSUE_NAME = "Potential RCE through exposed Felix console";
+    private static final String ISSUE_NAME = "WCMDebugFilter exposed";
 
-    private static final String ISSUE_DESCRIPTION =
-            "The Felix console is exposed. It is an administrative backend which provides full access to the AEM installation and allows to install own code."
-                    + "Potential Remote Code Execution vulnerabilty.";
+    private static final String ISSUE_DESCRIPTION = "Sensitive information might be exposed via AEM 's WCMDebugFilter."
+            + "It will render a backend interface which provides additional attack surface and might be vulnerable to reflected XSS (CVE-2016-7882). "
+            + "See - https://medium.com/@jonathanbouman/reflected-xss-at-philips-com-e48bf8f9cd3c. "
+            + "Please check the URL's manually. See %s";
 
-    private static final String[] GET_SERVLET_PATHS = new String[] {
-            "/system/console/bundles", "///system///console///bundles"
-    };
+    private static final String CELL_REFERENCE = "<br>cell=";
 
-    private static final String[] GET_SERVLET_EXTENSIONS = new String[] {
-            "", ".json", ".1.json", ".4.2.1...json", ".css", ".ico", ".png", ".gif", ".html", ".js",
-            ";%0aa.css", ";%0aa.html", ";%0aa.js", ";%0aa.png", ".json;%0aa.ico", ".servlet/a.css",
-            ".servlet/a.js", ".servlet/a.html", ".servlet/a.ico", ".servlet/a.png"
-    };
+    private static final Severity severity = Severity.HIGH;
+
+    private static final Confidence confidence = Confidence.CERTAIN;
 
     /**
-     * {@link java.lang.reflect.Constructor}
+     * Constructor
      *
      * @param helperDto
      * @param baseMessage
      */
-    public FelixSystemConsoleExpose(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
+    public DebugFilterDetector(BurpHelperDto helperDto, IHttpRequestResponse baseMessage) {
         super(helperDto, baseMessage);
     }
 
+    /**
+     * Overrides send request to toogle to a POST request
+     *
+     * @param url         Url
+     * @param httpService http service
+     * @return
+     */
     public IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService) {
         final BurpHttpRequest burpRequest = new BurpHttpRequest(getHelpers(), getBaseMessage(), url);
         burpRequest.setMethod("GET");
-        burpRequest.addHeader("Authorization: Basic YWRtaW46YWRtaW4=");
+        burpRequest.addParameter("debug", "layout");
         Optional<byte[]> newRequest = burpRequest.create();
 
         return getHelperDto().getCallbacks().makeHttpRequest(httpService, newRequest.get());
@@ -64,17 +69,18 @@ public class FelixSystemConsoleExpose extends AbstractDetector {
 
         getHelperDto().getCallbacks().printOutput("StatusCode: " + response.getStatusCode());
 
-        return response.getStatusCode() == 200 && responseBody.contains("Web Console");
+        return response.getStatusCode() == 200 && responseBody.contains(CELL_REFERENCE);
     }
 
     @Override
     protected List<String> getPaths() {
-        return Arrays.asList(GET_SERVLET_PATHS);
+        final URL baseUrl = getHelpers().analyzeRequest(getBaseMessage().getHttpService(), getBaseMessage().getRequest()).getUrl();
+        return Arrays.asList(baseUrl.getPath());
     }
 
     @Override
     protected List<String> getExtensions() {
-        return Arrays.asList(GET_SERVLET_EXTENSIONS);
+        return Collections.emptyList();
     }
 
     @Override
@@ -89,11 +95,11 @@ public class FelixSystemConsoleExpose extends AbstractDetector {
 
     @Override
     public Severity getSeverity() {
-        return Severity.HIGH;
+        return severity;
     }
 
     @Override
     public Confidence getConfidence() {
-        return Confidence.CERTAIN;
+        return confidence;
     }
 }

@@ -2,6 +2,7 @@ package burp.actions.misconfiguration;
 
 import burp.*;
 import burp.actions.SecurityCheck;
+import burp.util.BurpHttpRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
@@ -13,6 +14,7 @@ import java.util.*;
  *
  * @author thomas.hartmann@netcentric.biz
  * @since 01/2019
+ * @deprecated will be replaced by a more lean version
  */
 public class MetaDataLeakageCheckCallable implements SecurityCheck {
 
@@ -260,5 +262,17 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
     @Override
     public IExtensionHelpers getHelpers() {
         return this.helperDto.getHelpers();
+    }
+
+    @Override public IHttpRequestResponse sendRequest(URL url, IHttpService httpService) {
+        return null;
+    }
+
+    @Override public IHttpRequestResponse sendRequest(BurpHttpRequest burpHttpRequest, IHttpService httpService) {
+        return null;
+    }
+
+    @Override public BurpHelperDto getHelperDto() {
+        return null;
     }
 }

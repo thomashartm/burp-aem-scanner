@@ -25,10 +25,7 @@ public interface WithHttpRequests {
      * @param httpService http service
      * @return IHttpRequestResponse
      */
-    default IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService) {
-        final byte[] request = getHelperDto().getHelpers().buildHttpRequest(url);
-        return getHelperDto().getCallbacks().makeHttpRequest(httpService, request);
-    }
+    IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService);
 
     /**
      * Sends a request
@@ -37,10 +34,7 @@ public interface WithHttpRequests {
      * @param httpService
      * @return IHttpRequestResponse
      */
-    default IHttpRequestResponse sendRequest(final BurpHttpRequest burpHttpRequest, final IHttpService httpService) {
-        final Optional<byte[]> optional = burpHttpRequest.create();
-        return getHelperDto().getCallbacks().makeHttpRequest(httpService, optional.get());
-    }
+    IHttpRequestResponse sendRequest(final BurpHttpRequest burpHttpRequest, final IHttpService httpService);
 
     /**
      * Transforms a response to a String representation

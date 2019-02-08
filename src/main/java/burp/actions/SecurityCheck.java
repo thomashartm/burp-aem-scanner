@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * @author thomas.hartmann@netcentric.biz
  * @since 01/2019
  */
-public interface SecurityCheck extends WithIssueBuilder, WithComparator, Callable<Boolean> {
+public interface SecurityCheck extends WithHttpRequests, WithIssueBuilder, WithComparator, Callable<Boolean> {
 
     String PATH_PATTERN = "%s%s";
 

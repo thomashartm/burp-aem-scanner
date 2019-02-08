@@ -2,6 +2,8 @@ package burp.actions.dispatcher;
 
 import burp.*;
 import burp.actions.AbstractDetector;
+import burp.payload.DefaultCredential;
+import burp.payload.FilterEvasion;
 import burp.util.BurpHttpRequest;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,17 +41,6 @@ public class LoginStatusServletExposed extends AbstractDetector {
             "/system/sling/loginstatus", "///system///sling///loginstatus"
     };
 
-    private static final String[] EXTENSIONS = new String[] {
-            "",".json", ".css", ".ico", ".png", ".gif", ".html", ".js", ".json/a.1.json",
-            ".json;%0aa.css", ".json;%0aa.html", ".json;%0aa.js", ".json;%0aa.png",
-            ".json;%0aa.ico", ".4.2.1...json"
-    };
-
-    private static final String[] DEFAULT_CREDENTIALS = new String[] {
-            "admin:admin", "author:author", "replication-receiver:replication-receiver", "vgnadmin:vgnadmin",
-            "aparker@geometrixx.info:aparker", "jdoe@geometrixx.info:jdoe"
-    };
-
     /**
      * {@link java.lang.reflect.Constructor}
      *
@@ -84,18 +75,18 @@ public class LoginStatusServletExposed extends AbstractDetector {
     }
 
     private void checkForDefaultCredentialAuthentication(final URL url, final List<IScanIssue> issues) {
-        for (final String credentialPair : DEFAULT_CREDENTIALS) {
-            final String authorizationHeader = String.format("Authorization: Basic %s", getHelpers().base64Encode(credentialPair));
+        for (final DefaultCredential credentialPair : DefaultCredential.values()) {
+            final String authorizationHeader = String.format("Authorization: Basic %s", getHelpers().base64Encode(credentialPair.getCombination()));
             final BurpHttpRequest burpRequest = new BurpHttpRequest(getHelpers(), getBaseMessage(), url);
             burpRequest.setMethod("GET");
             burpRequest.addHeader(authorizationHeader);
 
             final IHttpRequestResponse authRequestResponse = this.sendRequest(burpRequest, getBaseMessage().getHttpService());
             final String responseBody = responseToString(authRequestResponse);
-            if (StringUtils.contains(responseBody, "authenticated")) {
+            if (StringUtils.contains(responseBody, "authenticated=true")) {
                 report(authRequestResponse,
                         DEFAULT_AUTH_ISSUE_NAME,
-                        String.format(DEFAULT_AUTH_ISSUE_DESCRIPTION, credentialPair),
+                        String.format(DEFAULT_AUTH_ISSUE_DESCRIPTION, credentialPair.getCombination()),
                         Severity.HIGH,
                         Confidence.CERTAIN)
                         .ifPresent(issue -> issues.add(issue));
@@ -120,7 +111,7 @@ public class LoginStatusServletExposed extends AbstractDetector {
 
     @Override
     protected List<String> getExtensions() {
-        return Arrays.asList(EXTENSIONS);
+        return FilterEvasion.DISPATCHER_BYPASS_EXTENSIONS.getBypasses();
     }
 
     @Override
