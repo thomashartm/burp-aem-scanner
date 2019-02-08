@@ -9,7 +9,9 @@ The Burp AEM Security Scanner is a burp extension providing support for a number
 and evaluates typical AEM and Dispatcher misconfigurations. 
 
 ## Burp Version
-The extension uses is triggered through a context menu extension and therefore does not require the active scanner.
+The extension supports Burp Community as it is triggered through a context menu extension 
+and does not rely on the avilibility of the active or passive scanner.
+
 
 # How to use
 Select one or multiple pages from within the Target sitemap. Then click on the relevant security check categories whoch you are planning to execute.
@@ -32,4 +34,7 @@ To debug the extension, open burp via commandline with remote debugging enabled.
 # How to install 
 Build the project.
 Then open Burp extender and select the compiled and assembled JAR.
-The extender will automatically register all scans and the scanner will run in the context of passive and active auditing.
+The extender will automatically register the scanner menu including all actions.
+Click a specific action to activate the detection for the provided URL.
+
+Only the selected URLs will be used as a base for the respective scan.
