@@ -7,7 +7,9 @@ import burp.IExtensionHelpers;
 import burp.actions.SecurityCheckExecutorService;
 import burp.actions.accesscontrol.WriteAccessPossible;
 import burp.actions.dispatcher.*;
+import burp.actions.misconfiguration.AuditServletDetector;
 import burp.actions.misconfiguration.DebugFilterDetector;
+import burp.actions.misconfiguration.WcmSuggestionServletDetector;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -41,6 +43,8 @@ public class AEMSecurityAnalysisMenu extends JMenu {
 
         // AEM Misconfiguration
         register("WCMDebugFilter enabled", new GenericCheckActionListener(executorService, helperDto, DebugFilterDetector.class));
+        register("WCMSuggestionsServlet enabled", new GenericCheckActionListener(executorService, helperDto, WcmSuggestionServletDetector.class));
+        register("AuditLogServlet enabled", new GenericCheckActionListener(executorService, helperDto, AuditServletDetector.class));
     }
 
     private void register(final String name, final ActionListener actionListener) {
