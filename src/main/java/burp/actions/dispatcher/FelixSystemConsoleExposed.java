@@ -20,7 +20,7 @@ import java.util.Optional;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class FelixSystemConsoleExpose extends AbstractDetector {
+public class FelixSystemConsoleExposed extends AbstractDetector {
 
     private static final String ISSUE_NAME = "Potential RCE through exposed Felix console";
 
@@ -44,7 +44,7 @@ public class FelixSystemConsoleExpose extends AbstractDetector {
      * @param helperDto
      * @param baseMessage
      */
-    public FelixSystemConsoleExpose(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
+    public FelixSystemConsoleExposed(final BurpHelperDto helperDto, final IHttpRequestResponse baseMessage) {
         super(helperDto, baseMessage);
     }
 
