@@ -40,7 +40,7 @@ public class GenericCheckActionListener implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-        this.helperDto.getCallbacks().printOutput("GenericCheckActionListener triggered. " + event.toString());
+        //this.helperDto.getCallbacks().printOutput("GenericCheckActionListener triggered. " + event.toString());
 
         final IHttpRequestResponse[] messages = this.helperDto.getiContextMenuInvocation().getSelectedMessages();
         // now we start crafting requests for our vulnerabilities
@@ -51,7 +51,6 @@ public class GenericCheckActionListener implements ActionListener {
                         c -> this.securityCheckExecutorService.executeAsync(c)
                 );
             }
-            this.helperDto.getCallbacks().printOutput("Misconfiguration related callables submitted for execution");
         }
     }
 
@@ -59,8 +58,6 @@ public class GenericCheckActionListener implements ActionListener {
         Callable callable = null;
         try {
             final Class<?> clazz = Class.forName(callableType.getName());
-            this.helperDto.getCallbacks().printOutput("Creating: " + callableType.getName());
-
             final Constructor<?> constructor = clazz.getConstructor(BurpHelperDto.class, IHttpRequestResponse.class);
             callable = (Callable) constructor.newInstance(new Object[] { this.helperDto, baseMessage });
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {

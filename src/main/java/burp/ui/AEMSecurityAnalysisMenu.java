@@ -6,6 +6,7 @@ import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
 import burp.actions.SecurityCheckExecutorService;
 import burp.actions.accesscontrol.WriteAccessPossible;
+import burp.actions.crx.CrxExposedDetector;
 import burp.actions.dispatcher.*;
 import burp.actions.misconfiguration.AuditServletDetector;
 import burp.actions.misconfiguration.DebugFilterDetector;
@@ -37,6 +38,9 @@ public class AEMSecurityAnalysisMenu extends JMenu {
         register("PostServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, PostServletExposed.class));
         register("LoginStatusServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));
         register("FelixConsole Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));
+
+        // CRX
+        register("CRX Exposed Check", new GenericCheckActionListener(executorService, helperDto, CrxExposedDetector.class));
 
         // permissions related misconfiguration
         register("AEM WriteAccessCheck", new GenericCheckActionListener(executorService, helperDto, WriteAccessPossible.class));
