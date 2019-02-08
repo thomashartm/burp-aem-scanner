@@ -1,6 +1,7 @@
 package burp.actions;
 
 import burp.*;
+import burp.util.BurpHttpRequest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public abstract class AbstractDetector implements SecurityCheck, WithHttpRequests {
+public abstract class AbstractDetector implements SecurityCheck {
 
     private final IHttpRequestResponse baseMessage;
 
@@ -60,6 +61,30 @@ public abstract class AbstractDetector implements SecurityCheck, WithHttpRequest
                 this.helperDto.getCallbacks().printError("Unable to handle url for path " + path + " " + e);
             }
         };
+    }
+
+    /**
+     * Sends a request
+     *
+     * @param url         Url
+     * @param httpService http service
+     * @return IHttpRequestResponse
+     */
+    public IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService) {
+        final byte[] request = getHelperDto().getHelpers().buildHttpRequest(url);
+        return getHelperDto().getCallbacks().makeHttpRequest(httpService, request);
+    }
+
+    /**
+     * Sends a request
+     *
+     * @param burpHttpRequest
+     * @param httpService
+     * @return IHttpRequestResponse
+     */
+    public IHttpRequestResponse sendRequest(final BurpHttpRequest burpHttpRequest, final IHttpService httpService) {
+        final Optional<byte[]> optional = burpHttpRequest.create();
+        return getHelperDto().getCallbacks().makeHttpRequest(httpService, optional.get());
     }
 
     public Optional<ScanIssue> report(IHttpRequestResponse requestResponse, final String name, final String description,

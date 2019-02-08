@@ -11,16 +11,23 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO - add javadoc
+ * WCMDebugFilter
+ *
+ * The burp extension is a port of 0ang3el's hacktivity conference checks.
+ * See his presentation and the related aemhackers project
+ * https://speakerdeck.com/0ang3el/hunting-for-security-bugs-in-aem-webapps
+ * https://github.com/0ang3el
  *
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
 public class DebugFilterDetector extends AbstractDetector {
 
-    private static final String ISSUE_NAME = "AEM Debug Filter enabled";
+    private static final String ISSUE_NAME = "WCMDebugFilter exposed";
 
-    private static final String ISSUE_DESCRIPTION = "Sensitive information might be exposed via AEM 's DefaultGetServlet. "
+    private static final String ISSUE_DESCRIPTION = "Sensitive information might be exposed via AEM 's WCMDebugFilter."
+            + "It will render a backend interface which provides additional attack surface and might be vulnerable to reflected XSS (CVE-2016-7882). "
+            + "See - https://medium.com/@jonathanbouman/reflected-xss-at-philips-com-e48bf8f9cd3c. "
             + "Please check the URL's manually. See %s";
 
     private static final String CELL_REFERENCE = "<br>cell=";
@@ -67,7 +74,7 @@ public class DebugFilterDetector extends AbstractDetector {
 
     @Override
     protected List<String> getPaths() {
-        final URL baseUrl = getHelpers().analyzeRequest(getBaseMessage().getRequest()).getUrl();
+        final URL baseUrl = getHelpers().analyzeRequest(getBaseMessage().getHttpService(), getBaseMessage().getRequest()).getUrl();
         return Arrays.asList(baseUrl.getPath());
     }
 

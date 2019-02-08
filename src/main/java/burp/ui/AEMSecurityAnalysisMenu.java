@@ -4,8 +4,10 @@ import burp.BurpExtender;
 import burp.BurpHelperDto;
 import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
+import burp.actions.SecurityCheckExecutorService;
 import burp.actions.accesscontrol.WriteAccessPossible;
 import burp.actions.dispatcher.*;
+import burp.actions.misconfiguration.DebugFilterDetector;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -24,17 +26,21 @@ public class AEMSecurityAnalysisMenu extends JMenu {
 
     private IExtensionHelpers helpers;
 
-    public AEMSecurityAnalysisMenu(final BurpHelperDto helperDto) {
+    public AEMSecurityAnalysisMenu(final SecurityCheckExecutorService executorService, final BurpHelperDto helperDto) {
         this.setText("AEM Actions");
 
-        register("DefaultGetServlet Exposed Check", new GenericCheckActionListener(helperDto, GetServletExposed.class));
-        register("QueryBuilder Exposed Check", new GenericCheckActionListener(helperDto, QueryBuilderExposed.class));
-        register("GQLQueryServlet Exposed Check", new GenericCheckActionListener(helperDto, GQLServletExposed.class));
-        register("PostServlet Exposed Check", new GenericCheckActionListener(helperDto, PostServletExposed.class));
-        register("LoginStatusServlet Exposed Check", new GenericCheckActionListener(helperDto, LoginStatusServletExposed.class));
-        register("FelixConsole Check", new GenericCheckActionListener(helperDto, LoginStatusServletExposed.class));
+        register("DefaultGetServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, GetServletExposed.class));
+        register("QueryBuilder Exposed Check", new GenericCheckActionListener(executorService, helperDto, QueryBuilderExposed.class));
+        register("GQLQueryServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, GQLServletExposed.class));
+        register("PostServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, PostServletExposed.class));
+        register("LoginStatusServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));
+        register("FelixConsole Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));
+
         // permissions related misconfiguration
-        register("AEM WriteAccessCheck", new GenericCheckActionListener(helperDto, WriteAccessPossible.class));
+        register("AEM WriteAccessCheck", new GenericCheckActionListener(executorService, helperDto, WriteAccessPossible.class));
+
+        // AEM Misconfiguration
+        register("WCMDebugFilter enabled", new GenericCheckActionListener(executorService, helperDto, DebugFilterDetector.class));
     }
 
     private void register(final String name, final ActionListener actionListener) {

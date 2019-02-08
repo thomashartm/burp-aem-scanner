@@ -12,6 +12,11 @@ import java.util.Optional;
 /**
  * Checks if the system console is accessible and providing attack surface.
  *
+ * The burp extension is a port of 0ang3el's hacktivity conference checks.
+ * See his presentation and the related aemhackers project
+ * https://speakerdeck.com/0ang3el/hunting-for-security-bugs-in-aem-webapps
+ * https://github.com/0ang3el
+ *
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */

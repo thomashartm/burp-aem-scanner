@@ -1,5 +1,6 @@
 package burp;
 
+import burp.actions.SecurityCheckExecutorService;
 import burp.ui.AEMSecurityAnalysisMenu;
 
 import javax.swing.*;
@@ -20,6 +21,8 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory {
 
     private IExtensionHelpers helpers;
 
+    private SecurityCheckExecutorService executorService;
+
     @Override
     public void registerExtenderCallbacks(final IBurpExtenderCallbacks callbacks) {
         // keep a reference to our callbacks object
@@ -31,6 +34,8 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory {
         // set our extension name
         callbacks.setExtensionName(EXTENSION_NAME);
 
+        this.executorService = new SecurityCheckExecutorService(5);
+
         this.callbacks.registerContextMenuFactory(this);// for menus
     }
 
@@ -40,7 +45,7 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory {
         final BurpHelperDto helperDto = new BurpHelperDto(this, this.callbacks, this.helpers, iContextMenuInvocation);
 
         final List<JMenuItem> menuItems = new ArrayList<>();
-        JMenu dispatcherAnalysisMenu = new AEMSecurityAnalysisMenu(helperDto);
+        JMenu dispatcherAnalysisMenu = new AEMSecurityAnalysisMenu(this.executorService, helperDto);
         menuItems.add(dispatcherAnalysisMenu);
         return menuItems;
     }

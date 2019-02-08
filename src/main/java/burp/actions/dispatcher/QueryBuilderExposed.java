@@ -2,10 +2,12 @@ package burp.actions.dispatcher;
 
 import burp.*;
 import burp.actions.AbstractDetector;
+import burp.payload.FilterEvasion;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Filter;
 
 /**
  * Checks wether QueryBuilder related servlets expose sensitive information.
@@ -31,12 +33,6 @@ public class QueryBuilderExposed extends AbstractDetector {
             "///bin///querybuilder.json", "///bin///querybuilder.json.servlet",
             "/bin/querybuilder.feed", "/bin/querybuilder.feed.servlet",
             "///bin///querybuilder.feed", "///bin///querybuilder.feed.servlet"
-    };
-
-    private static final String[] EXTENSIONS = new String[] {
-            "", ".css", ".ico", ".png", ".gif", ".jpeg", ".html", ".1.json", ".4.2.1...json",
-            "/a.css", "/a.html", "/a.ico", "/a.png", "/a.js", "/a.1.json", "/a.4.2.1...json",
-            ";%0aa.css", ";%0aa.png", ";%0aa.js", ";%0aa.html", ";%0aa.ico"
     };
 
     private static final Severity severity = Severity.HIGH;
@@ -70,7 +66,7 @@ public class QueryBuilderExposed extends AbstractDetector {
 
     @Override
     protected List<String> getExtensions() {
-        return Arrays.asList(EXTENSIONS);
+        return FilterEvasion.DISPATCHER_BYPASS_EXTENSIONS.getBypasses();
     }
 
     @Override

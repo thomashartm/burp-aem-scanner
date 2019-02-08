@@ -56,7 +56,7 @@ public class BurpHttpRequest {
         } else {
             baseRequest = postMessageFromBaseMessage(url, this.headers);
         }
-        addUrlParameters(baseRequest);
+        baseRequest = addUrlParameters(baseRequest);
 
         return Optional.ofNullable(baseRequest);
     }
@@ -98,11 +98,12 @@ public class BurpHttpRequest {
         return this.helpers.buildHttpMessage(headers, this.helpers.stringToBytes(bodyEncoded));
     }
 
-    private void addUrlParameters(byte[] baseRequest) {
+    private byte[] addUrlParameters(byte[] baseRequest) {
         for (Map.Entry<String, String> pair : this.parameters.entrySet()) {
             final IParameter parameter = this.helpers.buildParameter(pair.getKey(), pair.getValue(), IParameter.PARAM_URL);
             baseRequest = this.helpers.addParameter(baseRequest, parameter);
         }
+        return baseRequest;
     }
 
     private String[] createHeaderFilterList(List<String> newHeaders) {
