@@ -4,7 +4,9 @@ Burp AEM Scanner is an AEM focussed plugin which supports the evaluation of well
 # How to build
 The extension is written in java. Please use maven >= 3.3.9 to build it.
 
+
 `mvn clean install`
+
 
 The compiled and packaged jar is located inside target folder.
  
