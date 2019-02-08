@@ -9,9 +9,8 @@ AEM is an enterprise grade content management system used by a variety of high p
 AEM is a powerful but complex system and requires thoughtful handling of defaults and configurations. 
 Therefore it leaves room for plenty of security bugs.
 
-## Burp Version
-The extension supports Burp Community as it is triggered through a context menu extension 
-and does not rely on the avilibility of the active or passive scanner.
+## Installation Requirements
+Burp Community is sufficient as the extnsion does not require the active or passive scanner.
 
 # How to use
 Select one or multiple pages from within the Target sitemap. Then click on the relevant security check categories whoch you are planning to execute.
