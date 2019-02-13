@@ -55,6 +55,7 @@ public class DefaultLoginWithLoginPagePossible extends AbstractDetector {
 
                 if (detectedCredentials.size() > 0) {
 
+                    getHelperDto().getCallbacks().addToSiteMap(requestResponse);
                     report(requestResponse, getName(),
                             getDescription() + StringUtils.join(detectedCredentials, " ; "),
                             Severity.HIGH,
