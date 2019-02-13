@@ -49,13 +49,17 @@ public class DefaultLoginWithLoginPagePossible extends AbstractDetector {
                 for (final DefaultCredential credentialPair : DefaultCredential.values()) {
                     requestResponse = this.sendRequest(loginUrl, credentialPair.getUserName(), credentialPair.getPassword());
                     if (requestResponse != null && issueDetected(requestResponse)) {
+                        // add the first hit to sitemap
+                        if(detectedCredentials.size() == 0) {
+                            getHelperDto().getCallbacks().addToSiteMap(requestResponse);
+                        }
                         detectedCredentials.add(credentialPair.getCombination());
                     }
                 }
 
                 if (detectedCredentials.size() > 0) {
 
-                    getHelperDto().getCallbacks().addToSiteMap(requestResponse);
+
                     report(requestResponse, getName(),
                             getDescription() + StringUtils.join(detectedCredentials, " ; "),
                             Severity.HIGH,
