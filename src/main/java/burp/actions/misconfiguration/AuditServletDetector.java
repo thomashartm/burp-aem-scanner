@@ -42,12 +42,12 @@ public class AuditServletDetector extends AbstractDetector {
     @Override
     protected boolean issueDetected(IHttpRequestResponse requestResponse) {
         final IResponseInfo response = getHelpers().analyzeResponse(requestResponse.getResponse());
-        final String responseBody = responseToString(requestResponse);
+        final String responseBody = responseBodyToString(requestResponse);
 
         getHelperDto().getCallbacks().printOutput("StatusCode: " + response.getStatusCode());
 
         if (response.getStatusCode() == 200) {
-            final String body = responseToString(requestResponse);
+            final String body = responseBodyToString(requestResponse);
             final JSONObject json = new JSONObject(body);
             return json.has("results") && json.getLong("results") > 0;
         }

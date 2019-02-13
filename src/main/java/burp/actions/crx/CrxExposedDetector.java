@@ -53,7 +53,7 @@ public class CrxExposedDetector extends AbstractDetector {
     protected boolean issueDetected(IHttpRequestResponse requestResponse) {
         final IResponseInfo response = getHelpers().analyzeResponse(requestResponse.getResponse());
         getHelperDto().getCallbacks().printOutput("StatusCode: " + response.getStatusCode());
-        final String responseBody = responseToString(requestResponse);
+        final String responseBody = responseBodyToString(requestResponse);
         boolean matchDetected = false;
         if (response.getStatusCode() == 200) {
 

@@ -65,7 +65,7 @@ public class DebugFilterDetector extends AbstractDetector {
     @Override
     protected boolean issueDetected(IHttpRequestResponse requestResponse) {
         final IResponseInfo response = getHelpers().analyzeResponse(requestResponse.getResponse());
-        final String responseBody = responseToString(requestResponse);
+        final String responseBody = responseBodyToString(requestResponse);
 
         getHelperDto().getCallbacks().printOutput("StatusCode: " + response.getStatusCode());
 

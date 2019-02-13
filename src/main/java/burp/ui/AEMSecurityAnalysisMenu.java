@@ -5,6 +5,7 @@ import burp.BurpHelperDto;
 import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
 import burp.actions.SecurityCheckExecutorService;
+import burp.actions.accesscontrol.DefaultLoginWithLoginPagePossible;
 import burp.actions.accesscontrol.WriteAccessPossible;
 import burp.actions.crx.CrxExposedDetector;
 import burp.actions.dispatcher.*;
@@ -32,6 +33,10 @@ public class AEMSecurityAnalysisMenu extends JMenu {
     public AEMSecurityAnalysisMenu(final SecurityCheckExecutorService executorService, final BurpHelperDto helperDto) {
         this.setText("AEM Actions");
 
+        // Login
+        register("Login with DefaultCredentials", new GenericCheckActionListener(executorService, helperDto, DefaultLoginWithLoginPagePossible.class));
+
+        // Dispatcher
         register("DefaultGetServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, GetServletExposed.class));
         register("QueryBuilder Exposed Check", new GenericCheckActionListener(executorService, helperDto, QueryBuilderExposed.class));
         register("GQLQueryServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, GQLServletExposed.class));
@@ -42,7 +47,7 @@ public class AEMSecurityAnalysisMenu extends JMenu {
         // CRX
         register("CRX Exposed Check", new GenericCheckActionListener(executorService, helperDto, CrxExposedDetector.class));
 
-        // permissions related misconfiguration
+        // Permissions related misconfiguration
         register("AEM WriteAccessCheck", new GenericCheckActionListener(executorService, helperDto, WriteAccessPossible.class));
 
         // AEM Misconfiguration

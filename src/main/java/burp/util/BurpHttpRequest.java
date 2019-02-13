@@ -83,7 +83,7 @@ public class BurpHttpRequest {
         final List<String> headers = existingHeaders
                 .stream()
                 .map(header -> {
-                    if (StringUtils.containsIgnoreCase(header, "POST")) {
+                    if (StringUtils.containsAny(header, "POST", "GET")) {
                         return createPostHeader(url, header);
                     }
                     return header;
@@ -94,8 +94,7 @@ public class BurpHttpRequest {
         headers.addAll(newHeaders);
 
         final String bodyEncoded = this.helpers.urlEncode(body);
-
-        return this.helpers.buildHttpMessage(headers, this.helpers.stringToBytes(bodyEncoded));
+        return this.helpers.buildHttpMessage(headers, this.helpers.stringToBytes(body));
     }
 
     private byte[] addUrlParameters(byte[] baseRequest) {
@@ -109,7 +108,7 @@ public class BurpHttpRequest {
     private String[] createHeaderFilterList(List<String> newHeaders) {
         final List<String> ignoreOldOnes = newHeaders
                 .stream()
-                .map(header -> StringUtils.split(":")[0])
+                .map(header -> StringUtils.split(header, ":")[0])
                 .collect(Collectors.toList());
         return ignoreOldOnes.toArray(new String[ignoreOldOnes.size()]);
     }
@@ -120,7 +119,7 @@ public class BurpHttpRequest {
         return "POST " + path + " " + header.substring(end);
     }
 
-    private byte[] createBody(byte[] baseRequest, IRequestInfo requestInfo) {
+    private byte[] createBody(final byte[] baseRequest, final IRequestInfo requestInfo) {
         int bodyLength = baseRequest.length - requestInfo.getBodyOffset();
         byte[] body = new byte[bodyLength];
         System.arraycopy(baseRequest, requestInfo.getBodyOffset(), body, 0, bodyLength);

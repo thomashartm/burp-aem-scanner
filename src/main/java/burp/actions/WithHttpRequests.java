@@ -6,6 +6,7 @@ import burp.IHttpService;
 import burp.IResponseInfo;
 import burp.util.BurpHttpRequest;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public interface WithHttpRequests {
      * @param httpService http service
      * @return IHttpRequestResponse
      */
-    IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService);
+    IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService) throws MalformedURLException;
 
     /**
      * Sends a request
@@ -42,7 +43,7 @@ public interface WithHttpRequests {
      * @param requestResponse
      * @return
      */
-    default String responseToString(final IHttpRequestResponse requestResponse) {
+    default String responseBodyToString(final IHttpRequestResponse requestResponse) {
         final byte[] response = requestResponse.getResponse();
         final IResponseInfo responseInfo = this.getHelperDto().getHelpers().analyzeResponse(response);
         final byte[] body = Arrays.copyOfRange(response, responseInfo.getBodyOffset(), response.length);

@@ -82,7 +82,7 @@ public class LoginStatusServletExposed extends AbstractDetector {
             burpRequest.addHeader(authorizationHeader);
 
             final IHttpRequestResponse authRequestResponse = this.sendRequest(burpRequest, getBaseMessage().getHttpService());
-            final String responseBody = responseToString(authRequestResponse);
+            final String responseBody = responseBodyToString(authRequestResponse);
             if (StringUtils.contains(responseBody, "authenticated=true")) {
                 report(authRequestResponse,
                         DEFAULT_AUTH_ISSUE_NAME,
@@ -97,7 +97,7 @@ public class LoginStatusServletExposed extends AbstractDetector {
     @Override
     protected boolean issueDetected(final IHttpRequestResponse requestResponse) {
         final IResponseInfo response = getHelpers().analyzeResponse(requestResponse.getResponse());
-        final String responseBody = responseToString(requestResponse);
+        final String responseBody = responseBodyToString(requestResponse);
 
         getHelperDto().getCallbacks().printOutput("StatusCode: " + response.getStatusCode());
 

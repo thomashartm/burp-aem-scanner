@@ -6,7 +6,6 @@ import burp.payload.FilterEvasion;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Filter;
 
 /**
  * Checks wether information is be exposed via AEM"s DefaultGetServlet.
@@ -47,7 +46,7 @@ public class GetServletExposed extends AbstractDetector {
     @Override
     protected boolean issueDetected(IHttpRequestResponse requestResponse) {
         final IResponseInfo response = getHelpers().analyzeResponse(requestResponse.getResponse());
-        final String responseBody = responseToString(requestResponse);
+        final String responseBody = responseBodyToString(requestResponse);
 
         getHelperDto().getCallbacks().printOutput("StatusCode: " + response.getStatusCode());
 

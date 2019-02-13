@@ -52,7 +52,7 @@ public abstract class AbstractDetector implements SecurityCheck {
                 final URL url = new URL(httpService.getProtocol(), httpService.getHost(), httpService.getPort(), path);
                 final IHttpRequestResponse requestResponse = this.sendRequest(url, httpService);
 
-                getHelperDto().getCallbacks().printOutput("Request: " + url);
+                //getHelperDto().getCallbacks().printOutput("Request: " + url);
                 if (issueDetected(requestResponse)) {
                     report(requestResponse, getName(), String.format(getDescription(), url.toString()), Severity.HIGH, Confidence.CERTAIN)
                             .ifPresent(issue -> issues.add(issue));
@@ -70,7 +70,7 @@ public abstract class AbstractDetector implements SecurityCheck {
      * @param httpService http service
      * @return IHttpRequestResponse
      */
-    public IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService) {
+    public IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService) throws MalformedURLException {
         final byte[] request = getHelperDto().getHelpers().buildHttpRequest(url);
         return getHelperDto().getCallbacks().makeHttpRequest(httpService, request);
     }
