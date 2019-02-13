@@ -14,11 +14,19 @@ Therefore it leaves room for plenty of security bugs.
 Burp Community is sufficient as the extnsion does not require the active or passive scanner.
 
 # How to use
-Select one or multiple pages from within the Target sitemap. Then click on the relevant security check categories whoch you are planning to execute.
+Select one or multiple pages from within the Target sitemap. Then click on the relevant security check categories which you are planning to execute.
+
+The scanner extension will use the selected URLs and pass them to the checks. 
+Each check is self contained and will decide what to use from the provided URL, e.g. just the host and port e.g. to use it as a base to build the CRX or Felix Console URLs and to test dispatcher bypasses for them or the complete URL e.g. to verify if the particular page is vulnerable for enumeration.
 
 ![AEM Actions Menu](https://github.com/thomashartm/burp-aem-scanner/blob/gh-pages/images/aem-actions.jpg "AEM Actions")
 
 The security checks will be executed by a thread pool in the background to check progress, please look into the extender output.
+
+# Why doesn't it use active scanner?
+First of all because I want to make the checks available for everyone. 
+Additioanlly and that is personally my major concern, the Burp extender API does not allow to trigger "one exection per host" checks e.g. to test for the existance of CRX and other resources, with the result of many unnecessary requests.
+Therefore I decided to go for a manual trigger those scans.
 
 # How to build and develop
 The extension is written in java. Please use maven >= 3.3.9 to build it. 
