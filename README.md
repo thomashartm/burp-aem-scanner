@@ -1,8 +1,9 @@
 # Burp AEM Security Scanner Extension
 [![Build Status](https://travis-ci.org/thomashartm/burp-aem-scanner.svg?branch=master)](https://travis-ci.org/thomashartm/burp-aem-scanner)
 
-Burp AEM Scanner is an AEM focussed plugin which supports the evaluation of well known misconfigurations of AEM installations.
+Burp AEM Security Scanner is an AEM focussed plugin which supports the evaluation of well known misconfigurations of AEM installations.
 It supports the verification of a number of Adobe's security checklist topics and evaluates typical AEM and Dispatcher misconfigurations. 
+
 
 ### What is AEM
 AEM is an enterprise grade content management system used by a variety of high profile companies. 
@@ -13,11 +14,19 @@ Therefore it leaves room for plenty of security bugs.
 Burp Community is sufficient as the extnsion does not require the active or passive scanner.
 
 # How to use
-Select one or multiple pages from within the Target sitemap. Then click on the relevant security check categories whoch you are planning to execute.
+Select one or multiple pages from within the Target sitemap. Then click on the relevant security check categories which you are planning to execute.
+
+The scanner extension will use the selected URLs and pass them to the checks. 
+Each check is self contained and will decide what to use from the provided URL, e.g. just the host and port e.g. to use it as a base to build the CRX or Felix Console URLs and to test dispatcher bypasses for them or the complete URL e.g. to verify if the particular page is vulnerable for enumeration.
 
 ![AEM Actions Menu](https://github.com/thomashartm/burp-aem-scanner/blob/gh-pages/images/aem-actions.jpg "AEM Actions")
 
 The security checks will be executed by a thread pool in the background to check progress, please look into the extender output.
+
+# Why doesn't it use active scanner?
+First of all because I want to make the checks available for everyone. 
+Additioanlly and that is personally my major concern, the Burp extender API does not allow to trigger "one exection per host" checks e.g. to test for the existance of CRX and other resources, with the result of many unnecessary requests.
+Therefore I decided to go for a manual trigger those scans.
 
 # How to build and develop
 The extension is written in java. Please use maven >= 3.3.9 to build it. 
@@ -42,4 +51,5 @@ Only the selected URLs will be used as a base for the respective scan.
 If you have suggestions and ideas for improvement feel free to contact me or just raise a pull request. I'm happy to discuss it.
 
 # Credits
-It is based on Adobe's AEM/Dispatcher security checklist and implements the checks discovered and highlighted by Mikhail Egorov <0ang3el@gmail.com> https://github.com/0ang3el/aem-hacker/blob/master/aem_hacker.py
+It is based on Adobe's AEM/Dispatcher security checklist and implements many of the checks discovered and highlighted by Mikhail Egorov <0ang3el@gmail.com> https://github.com/0ang3el/aem-hacker/blob/master/aem_hacker.py
+
