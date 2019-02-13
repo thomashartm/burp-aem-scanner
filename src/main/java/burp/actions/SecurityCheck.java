@@ -1,15 +1,14 @@
 package burp.actions;
 
-import burp.*;
+import burp.Confidence;
+import burp.IHttpRequestResponse;
+import burp.IScanIssue;
+import burp.Severity;
 import burp.util.WithComparator;
 import burp.util.WithIssueBuilder;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
 /**
  * Custom scanner implementation that executes a security check on the given base response parameter.
@@ -25,15 +24,35 @@ public interface SecurityCheck extends WithHttpRequests, WithIssueBuilder, WithC
      * Executes the scan. Can be run outside of the active or passive scanner as we need to be able to execute exactly once only.
      *
      * @param baseRequestResponse
-     * @return
+     * @return List of IScanIssues
      */
     List<IScanIssue> scan(final IHttpRequestResponse baseRequestResponse);
 
+    /**
+     * Provides the issue name which serves as an identifier
+     *
+     * @return String
+     */
     String getName();
 
+    /**
+     * Provides the description which is shown in the issue.
+     *
+     * @return String
+     */
     String getDescription();
 
+    /**
+     * Provides the {@link Severity}
+     *
+     * @return Severity
+     */
     Severity getSeverity();
 
+    /**
+     * Provides the {@link Confidence}
+     *
+     * @return Confidence
+     */
     Confidence getConfidence();
 }
