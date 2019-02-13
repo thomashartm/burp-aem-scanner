@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * Verfies the provides URLs by appending a set of extensions and checks wether the requested URLs expose confidential information such as usernames.
+ * Verifys the provided URLs by appending a set of extensions and checks wether the requested URLs expose confidential information such as usernames.
  *
  * @author thomas.hartmann@netcentric.biz
  * @since 01/2019
