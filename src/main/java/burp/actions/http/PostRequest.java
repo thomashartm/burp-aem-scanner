@@ -36,48 +36,52 @@ public class PostRequest implements HttpMethod {
         this.helpers.toggleRequestMethod(baseRequest);
     }
 
-    /**
-     * Inits the post message
-     *
-     * @param newUrlTarget
-     */
-    @Override
-    public void init(final URL newUrlTarget) {
+    public void init(final URL url, final String... headers) {
         if (this.postMessage != null) {
             return;
         }
 
-        final byte[] request = this.helpers.buildHttpRequest(newUrlTarget);
+        final byte[] request = this.helpers.buildHttpRequest(url);
         final byte[] postRequest = this.helpers.toggleRequestMethod(request);
 
         this.postMessage = postRequest;
     }
 
-    public void addBodyParam(final String key, final String value) {
+    @Override
+    public void addRequestParameter(final String name, final String value) {
         if (this.postMessage == null) {
             return;
         }
 
-        final IParameter bodyParam = this.helpers.buildParameter(key, value, IParameter.PARAM_BODY);
+        final IParameter param = this.helpers.buildParameter(name, value, IParameter.PARAM_URL);
+        this.postMessage = this.helpers.addParameter(this.postMessage, param);
+    }
+
+    @Override
+    public void addBodyParameter(final String name, final String value) {
+        if (this.postMessage == null) {
+            return;
+        }
+
+        final IParameter bodyParam = this.helpers.buildParameter(name, value, IParameter.PARAM_BODY);
         this.postMessage = this.helpers.addParameter(this.postMessage, bodyParam);
     }
 
-    /**
-     * Sends the post message and provides a {@link ResponseHolder}
-     *
-     * @return ResponseHolder
-     */
-    @Override
     public ResponseHolder send() {
         if (this.postMessage == null) {
             return ResponseHolder.createIncomplete();
         }
-        //this.burpHelperDto.getCallbacks().printOutput("New Request: \n" + this.helpers.bytesToString(this.postMessage));
-        //this.burpHelperDto.getCallbacks().printOutput("\n End of new Request \nn" );
+
         final IHttpRequestResponse requestResponse = this.burpHelperDto.getCallbacks()
                 .makeHttpRequest(baseMessage.getHttpService(), this.postMessage);
         this.burpHelperDto.getCallbacks().printOutput("\n Send request: \n" + this.helpers.bytesToString(requestResponse.getRequest()) + "\n" );
         return ResponseHolder.create(requestResponse);
+    }
+
+    @Override
+    public ResponseHolder send(URL url) {
+        this.init(url);
+        return this.send();
     }
 
     public static PostRequest createInstance(final BurpHelperDto burpHelperDto, final IHttpRequestResponse baseMessage) {

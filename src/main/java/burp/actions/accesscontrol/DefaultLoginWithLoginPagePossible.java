@@ -83,13 +83,13 @@ public class DefaultLoginWithLoginPagePossible extends AbstractDetector {
     public IHttpRequestResponse sendRequest(final URL url, final String userName, final String password) {
         final PostRequest postRequest = PostRequest.createInstance(getHelperDto(), getBaseMessage());
         postRequest.init(url);
-        postRequest.addBodyParam("_charset_", "utf-8");
+        postRequest.addBodyParameter("_charset_", "utf-8");
 
         // splitting up user and pw as static code analysis rules complain about the terms being used.
-        postRequest.addBodyParam("j_u" + "sern" + "ame", userName);
-        postRequest.addBodyParam("j_pas" + "swo" + "rd", password);
+        postRequest.addBodyParameter("j_u" + "sern" + "ame", userName);
+        postRequest.addBodyParameter("j_pas" + "swo" + "rd", password);
 
-        postRequest.addBodyParam("j_validate", String.valueOf(true));
+        postRequest.addBodyParameter("j_validate", String.valueOf(true));
 
         final ResponseHolder responseHolder = postRequest.send();
 

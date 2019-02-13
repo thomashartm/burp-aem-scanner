@@ -2,6 +2,9 @@ package burp.actions.dispatcher;
 
 import burp.*;
 import burp.actions.AbstractDetector;
+import burp.actions.http.GetRequest;
+import burp.actions.http.HttpMethod;
+import burp.actions.http.ResponseHolder;
 import burp.payload.DefaultCredential;
 import burp.payload.FilterEvasion;
 import burp.util.BurpHttpRequest;
@@ -76,12 +79,8 @@ public class LoginStatusServletExposed extends AbstractDetector {
 
     private void checkForDefaultCredentialAuthentication(final URL url, final List<IScanIssue> issues) {
         for (final DefaultCredential credentialPair : DefaultCredential.values()) {
-            final String authorizationHeader = String.format("Authorization: Basic %s", getHelpers().base64Encode(credentialPair.getCombination()));
-            final BurpHttpRequest burpRequest = new BurpHttpRequest(getHelpers(), getBaseMessage(), url);
-            burpRequest.setMethod("GET");
-            burpRequest.addHeader(authorizationHeader);
+            final IHttpRequestResponse authRequestResponse = sendMessage(url, credentialPair);
 
-            final IHttpRequestResponse authRequestResponse = this.sendRequest(burpRequest, getBaseMessage().getHttpService());
             final String responseBody = responseBodyToString(authRequestResponse);
             if (StringUtils.contains(responseBody, "authenticated=true")) {
                 report(authRequestResponse,
@@ -92,6 +91,15 @@ public class LoginStatusServletExposed extends AbstractDetector {
                         .ifPresent(issue -> issues.add(issue));
             }
         }
+    }
+
+    private IHttpRequestResponse sendMessage(URL url, DefaultCredential credentialPair) {
+        final String authorizationHeader = String.format("Authorization: Basic %s", getHelpers().base64Encode(credentialPair.getCombination()));
+        final HttpMethod getMethod = GetRequest.createInstance(getHelperDto(), getBaseMessage());
+        getMethod.init(url, authorizationHeader);
+        final ResponseHolder response = getMethod.send();
+
+        return response.getResponseMessage();
     }
 
     @Override

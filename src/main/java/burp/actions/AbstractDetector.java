@@ -1,6 +1,9 @@
 package burp.actions;
 
 import burp.*;
+import burp.actions.http.GetRequest;
+import burp.actions.http.HttpMethod;
+import burp.actions.http.ResponseHolder;
 import burp.util.BurpHttpRequest;
 
 import java.net.MalformedURLException;
@@ -70,21 +73,11 @@ public abstract class AbstractDetector implements SecurityCheck {
      * @param httpService http service
      * @return IHttpRequestResponse
      */
-    public IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService) throws MalformedURLException {
-        final byte[] request = getHelperDto().getHelpers().buildHttpRequest(url);
-        return getHelperDto().getCallbacks().makeHttpRequest(httpService, request);
-    }
-
-    /**
-     * Sends a request
-     *
-     * @param burpHttpRequest
-     * @param httpService
-     * @return IHttpRequestResponse
-     */
-    public IHttpRequestResponse sendRequest(final BurpHttpRequest burpHttpRequest, final IHttpService httpService) {
-        final Optional<byte[]> optional = burpHttpRequest.create();
-        return getHelperDto().getCallbacks().makeHttpRequest(httpService, optional.get());
+    public IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService){
+        HttpMethod getMethod = GetRequest.createInstance(this.helperDto, getBaseMessage());
+        getMethod.init(url);
+        final ResponseHolder responseHolder = getMethod.send();
+        return responseHolder.getResponseMessage();
     }
 
     public Optional<ScanIssue> report(IHttpRequestResponse requestResponse, final String name, final String description,

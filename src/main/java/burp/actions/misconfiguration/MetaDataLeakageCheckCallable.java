@@ -268,10 +268,6 @@ public class MetaDataLeakageCheckCallable implements SecurityCheck {
         return null;
     }
 
-    @Override public IHttpRequestResponse sendRequest(BurpHttpRequest burpHttpRequest, IHttpService httpService) {
-        return null;
-    }
-
     @Override public BurpHelperDto getHelperDto() {
         return null;
     }

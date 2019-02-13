@@ -29,15 +29,6 @@ public interface WithHttpRequests {
     IHttpRequestResponse sendRequest(final URL url, final IHttpService httpService) throws MalformedURLException;
 
     /**
-     * Sends a request
-     *
-     * @param burpHttpRequest
-     * @param httpService
-     * @return IHttpRequestResponse
-     */
-    IHttpRequestResponse sendRequest(final BurpHttpRequest burpHttpRequest, final IHttpService httpService);
-
-    /**
      * Transforms a response to a String representation
      *
      * @param requestResponse
