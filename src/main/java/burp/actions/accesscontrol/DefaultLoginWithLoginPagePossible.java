@@ -24,8 +24,10 @@ public class DefaultLoginWithLoginPagePossible extends AbstractDetector {
 
     private static final String ISSUE_NAME = "Default credentials detected";
 
-    private static final String ISSUE_DESCRIPTION = "Default credentials detected and can be "
-            + "used to gain access to the system. Login with credentials %s was successful at the default login page URL %s";
+    private static final String ISSUE_DESCRIPTION = "Tested AEM Default login page with default credentials. "
+            + "First the default login page is accessible. Please check if this is desired for this environment. "
+            + "On top default credentials were detected and can be "
+            + "used to gain access to the system: ";
 
     /**
      * {@link java.lang.reflect.Constructor}
@@ -52,8 +54,9 @@ public class DefaultLoginWithLoginPagePossible extends AbstractDetector {
                 }
 
                 if (detectedCredentials.size() > 0) {
+
                     report(requestResponse, getName(),
-                            String.format(getDescription(), StringUtils.join(detectedCredentials, " ; "), loginUrl.toString()),
+                            getDescription() + StringUtils.join(detectedCredentials, " ; "),
                             Severity.HIGH,
                             Confidence.CERTAIN).ifPresent(issue -> issues.add(issue));
                 }
