@@ -47,6 +47,7 @@ public class AEMSecurityAnalysisMenu extends JMenu {
         register("QueryBuilder Exposed Check", new GenericCheckActionListener(executorService, helperDto, QueryBuilderExposed.class));
         register("GQLQueryServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, GQLServletExposed.class));
         register("PostServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, PostServletExposed.class));
+        register("XSS in AEM SWFs Check", new GenericCheckActionListener(executorService, helperDto, XSSinSWFDetector.class));
         addMenuSeparator();
 
         register("Felix Web Console Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));

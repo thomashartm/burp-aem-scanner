@@ -10,21 +10,13 @@ import java.net.URL;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class PostRequest {
-
-    public static final String PARAM_BODY = "body";
-
-    private static final String HTTP_METHOD_HEADER = "POST %s %s";
-
-    private static final String HTTP_HOST_HEADER = "Host: %s";
+public class PostRequest implements HttpMethod {
 
     private final IHttpRequestResponse baseMessage;
 
     private final IExtensionHelpers helpers;
 
     private final BurpHelperDto burpHelperDto;
-
-    private final IRequestInfo baseRequestInfo;
 
     private final byte[] baseRequest;
 
@@ -42,8 +34,6 @@ public class PostRequest {
         this.baseMessage = baseMessage;
         this.baseRequest = baseMessage.getRequest();
         this.helpers.toggleRequestMethod(baseRequest);
-
-        this.baseRequestInfo = this.helpers.analyzeRequest(baseMessage.getHttpService(), baseRequest);
     }
 
     /**
@@ -51,6 +41,7 @@ public class PostRequest {
      *
      * @param newUrlTarget
      */
+    @Override
     public void init(final URL newUrlTarget) {
         if (this.postMessage != null) {
             return;
@@ -76,6 +67,7 @@ public class PostRequest {
      *
      * @return ResponseHolder
      */
+    @Override
     public ResponseHolder send() {
         if (this.postMessage == null) {
             return ResponseHolder.createIncomplete();
