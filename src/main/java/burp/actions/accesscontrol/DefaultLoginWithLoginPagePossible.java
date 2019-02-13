@@ -25,7 +25,7 @@ public class DefaultLoginWithLoginPagePossible extends AbstractDetector {
     private static final String ISSUE_NAME = "Default credentials detected";
 
     private static final String ISSUE_DESCRIPTION = "Default credentials detected and can be "
-            + "used to gain access to the system. Login with credentials % was successful at the default login page URL %s";
+            + "used to gain access to the system. Login with credentials %s was successful at the default login page URL %s";
 
     /**
      * {@link java.lang.reflect.Constructor}

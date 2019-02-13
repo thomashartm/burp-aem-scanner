@@ -33,33 +33,41 @@ public class AEMSecurityAnalysisMenu extends JMenu {
     public AEMSecurityAnalysisMenu(final SecurityCheckExecutorService executorService, final BurpHelperDto helperDto) {
         this.setText("AEM Actions");
 
-        // Login
+        // CRX
+        register("CRX Exposed Check", new GenericCheckActionListener(executorService, helperDto, CrxExposedDetector.class));
+        addMenuSeparator();
+
+        // Login and permissions related misconfiguration
         register("Login with DefaultCredentials", new GenericCheckActionListener(executorService, helperDto, DefaultLoginWithLoginPagePossible.class));
+        register("AEM WriteAccessCheck", new GenericCheckActionListener(executorService, helperDto, WriteAccessPossible.class));
+        addMenuSeparator();
 
         // Dispatcher
         register("DefaultGetServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, GetServletExposed.class));
         register("QueryBuilder Exposed Check", new GenericCheckActionListener(executorService, helperDto, QueryBuilderExposed.class));
         register("GQLQueryServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, GQLServletExposed.class));
         register("PostServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, PostServletExposed.class));
-        register("LoginStatusServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));
-        register("FelixConsole Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));
+        addMenuSeparator();
 
-        // CRX
-        register("CRX Exposed Check", new GenericCheckActionListener(executorService, helperDto, CrxExposedDetector.class));
+        register("Felix Web Console Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));
+        register("Felix LoginStatusServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));
+        addMenuSeparator();
 
-        // Permissions related misconfiguration
-        register("AEM WriteAccessCheck", new GenericCheckActionListener(executorService, helperDto, WriteAccessPossible.class));
-
-        // AEM Misconfiguration
+        // Various AEM Misconfiguration
         register("WCMDebugFilter enabled", new GenericCheckActionListener(executorService, helperDto, DebugFilterDetector.class));
         register("WCMSuggestionsServlet enabled", new GenericCheckActionListener(executorService, helperDto, WcmSuggestionServletDetector.class));
         register("AuditLogServlet enabled", new GenericCheckActionListener(executorService, helperDto, AuditServletDetector.class));
+        addMenuSeparator();
     }
 
     private void register(final String name, final ActionListener actionListener) {
         final JMenuItem menuItem = new JMenuItem(name);
         menuItem.addActionListener(actionListener);
         this.add(menuItem);
+    }
+
+    private void addMenuSeparator(){
+        this.addSeparator();
     }
 }
 
