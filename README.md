@@ -1,8 +1,9 @@
 # Burp AEM Security Scanner Extension
 [![Build Status](https://travis-ci.org/thomashartm/burp-aem-scanner.svg?branch=master)](https://travis-ci.org/thomashartm/burp-aem-scanner)
 
-Burp AEM Scanner is an AEM focussed plugin which supports the evaluation of well known misconfigurations of AEM installations.
+Burp AEM Security Scanner is an AEM focussed plugin which supports the evaluation of well known misconfigurations of AEM installations.
 It supports the verification of a number of Adobe's security checklist topics and evaluates typical AEM and Dispatcher misconfigurations. 
+
 
 ### What is AEM
 AEM is an enterprise grade content management system used by a variety of high profile companies. 
