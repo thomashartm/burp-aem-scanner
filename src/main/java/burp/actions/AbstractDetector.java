@@ -4,7 +4,6 @@ import burp.*;
 import burp.actions.http.GetRequest;
 import burp.actions.http.HttpMethod;
 import burp.actions.http.ResponseHolder;
-import burp.util.BurpHttpRequest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,15 +40,16 @@ public abstract class AbstractDetector implements SecurityCheck {
 
         final List<IScanIssue> issues = new ArrayList<>();
         if (getExtensions().size() > 0) {
-            createPathMutations(getPaths(), getExtensions()).forEach(providePathConsumer(httpService, issues));
+            createPathMutations(getPaths(), getExtensions())
+                    .forEach(consumePath(httpService, issues));
         } else {
-            getPaths().forEach(providePathConsumer(httpService, issues));
+            getPaths().forEach(consumePath(httpService, issues));
         }
 
         return issues;
     }
 
-    public Consumer<String> providePathConsumer(final IHttpService httpService, final List<IScanIssue> issues) {
+    public Consumer<String> consumePath(final IHttpService httpService, final List<IScanIssue> issues) {
         return path -> {
             try {
                 final URL url = new URL(httpService.getProtocol(), httpService.getHost(), httpService.getPort(), path);
@@ -57,7 +57,11 @@ public abstract class AbstractDetector implements SecurityCheck {
 
                 getHelperDto().getCallbacks().printOutput("Request: " + url);
                 if (issueDetected(requestResponse)) {
-                    report(requestResponse, getName(), String.format(getDescription(), url.toString()), Severity.HIGH, Confidence.CERTAIN)
+                    report(requestResponse,
+                            getName(),
+                            String.format(getDescription(), url.toString()),
+                            Severity.HIGH,
+                            Confidence.CERTAIN)
                             .ifPresent(issue -> issues.add(issue));
                 }
             } catch (MalformedURLException e) {

@@ -39,7 +39,7 @@ public class DefaultLoginWithLoginPagePossible extends AbstractDetector {
         super(helperDto, baseMessage);
     }
 
-    public Consumer<String> providePathConsumer(final IHttpService httpService, final List<IScanIssue> issues) {
+    public Consumer<String> consumePath(final IHttpService httpService, final List<IScanIssue> issues) {
         return path -> {
             try {
                 final Set<String> detectedCredentials = new HashSet<>();
