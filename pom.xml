@@ -13,7 +13,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
+            <version>3.9</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
@@ -79,6 +79,25 @@
         </plugins>
     </build>
 
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>http://central.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+            <layout>default</layout>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
         <maven-compiler.version>3.6.1</maven-compiler.version>
