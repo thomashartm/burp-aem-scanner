@@ -12,6 +12,7 @@ import burp.actions.dispatcher.*;
 import burp.actions.misconfiguration.AuditServletDetector;
 import burp.actions.misconfiguration.DebugFilterDetector;
 import burp.actions.misconfiguration.WcmSuggestionServletDetector;
+import burp.actions.xss.FlippingTypeWithChildrenlistSelector;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -47,7 +48,11 @@ public class AEMSecurityAnalysisMenu extends JMenu {
         register("QueryBuilder Exposed Check", new GenericCheckActionListener(executorService, helperDto, QueryBuilderExposed.class));
         register("GQLQueryServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, GQLServletExposed.class));
         register("PostServlet Exposed Check", new GenericCheckActionListener(executorService, helperDto, PostServletExposed.class));
+        addMenuSeparator();
+
+        // XSS
         register("XSS in AEM SWFs Check", new GenericCheckActionListener(executorService, helperDto, XSSinSWFDetector.class));
+        register("XSS in childlist selector", new GenericCheckActionListener(executorService, helperDto, FlippingTypeWithChildrenlistSelector.class));
         addMenuSeparator();
 
         register("Felix Web Console Check", new GenericCheckActionListener(executorService, helperDto, LoginStatusServletExposed.class));
@@ -58,7 +63,6 @@ public class AEMSecurityAnalysisMenu extends JMenu {
         register("WCMDebugFilter enabled", new GenericCheckActionListener(executorService, helperDto, DebugFilterDetector.class));
         register("WCMSuggestionsServlet enabled", new GenericCheckActionListener(executorService, helperDto, WcmSuggestionServletDetector.class));
         register("AuditLogServlet enabled", new GenericCheckActionListener(executorService, helperDto, AuditServletDetector.class));
-        addMenuSeparator();
     }
 
     private void register(final String name, final ActionListener actionListener) {
