@@ -11,7 +11,7 @@ AEM is a powerful but complex system and requires thoughtful handling of default
 Therefore it leaves room for plenty of security bugs.
 
 ## Installation Requirements
-Burp Community is sufficient as the extnsion does not require the active or passive scanner.
+Burp Community is sufficient as the extension does not require the active or passive scanner.
 
 # How to use
 Select one or multiple pages from within the Target sitemap. Then click on the relevant security check categories which you are planning to execute.
@@ -25,8 +25,8 @@ The security checks will be executed by a thread pool in the background to check
 
 # Why doesn't it use active scanner?
 First of all because I want to make the checks available for everyone. 
-Additioanlly and that is personally my major concern, the Burp extender API does not allow to trigger "one exection per host" checks e.g. to test for the existance of CRX and other resources, with the result of many unnecessary requests.
-Therefore I decided to go for a manual trigger those scans.
+Additionally and that is personally my major concern, the Burp extender API does not allow to trigger "one execution per host" checks e.g. to test for the existence of CRX and other resources, with the result of many unnecessary requests.
+Therefore I decided to manually trigger those scans.
 
 # How to build and develop
 The extension is written in java. Please use maven >= 3.3.9 to build it. 
