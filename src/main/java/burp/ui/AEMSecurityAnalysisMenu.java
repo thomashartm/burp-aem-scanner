@@ -13,6 +13,7 @@ import burp.actions.misconfiguration.AuditServletDetector;
 import burp.actions.misconfiguration.DebugFilterDetector;
 import burp.actions.misconfiguration.WcmSuggestionServletDetector;
 import burp.actions.xss.FlippingTypeWithChildrenlistSelector;
+import burp.actions.xss.XSSinSWFDetector;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;

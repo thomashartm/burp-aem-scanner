@@ -47,9 +47,9 @@ public class FlippingTypeWithChildrenlistSelector extends AbstractDetector {
         boolean pass = false;
         for (final String header : response.getHeaders()) {
             // if we find the right content type then the XSS will trigger for browser with enabled flash
-            if (!pass && StringUtils.startsWith(header, "Content-Type:")) {
+            if (!pass && StringUtils.startsWithIgnoreCase(header.toLowerCase(), "content-type:")) {
                 contentTypeCounter++;
-                if (StringUtils.contains(header, "text/html")) {
+                if (StringUtils.containsIgnoreCase(header, "text/html")) {
                     getHelperDto().getCallbacks().printOutput("Found header: " + header);
                     pass = true;
                 }

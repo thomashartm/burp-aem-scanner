@@ -50,6 +50,12 @@ Only the selected URLs will be used as a base for the respective scan.
 # Contributions
 If you have suggestions and ideas for improvement feel free to contact me or just raise a pull request. I'm happy to discuss it.
 
+## How to contribute
+Feel free to contact me about your suggestions and concerns. 
+- Ideally create an issue with the project.
+- Clone the project, import it into your IDE of choice. 
+- Create a pull request for you changes.
+
 # Credits
 It is based on Adobe's AEM/Dispatcher security checklist and implements many of the checks discovered and highlighted by Mikhail Egorov <0ang3el@gmail.com> https://github.com/0ang3el/aem-hacker/blob/master/aem_hacker.py
 

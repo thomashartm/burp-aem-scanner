@@ -1,4 +1,4 @@
-package burp.actions.dispatcher;
+package burp.actions.xss;
 
 import burp.*;
 import burp.actions.AbstractDetector;
