@@ -1,25 +1,38 @@
 package burp;
 
-import burp.actions.SecurityCheckExecutorService;
-import burp.ui.AEMSecurityAnalysisMenu;
+import biz.netcentric.aem.securitycheck.checks.service.SecurityCheckExecutorService;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * AEM Security Scanner - BurpExtender. This class registers the scanner checks-
- *
- * @author thomas.hartmann@netcentric.biz
- * @since 11/2018
- */
-public class BurpExtender implements IBurpExtender, IContextMenuFactory {
+public class BurpExtender extends JMenu implements IBurpExtender, IContextMenuFactory {
 
     private static final String EXTENSION_NAME = "AEM Security Scanner";
+
+    public static final String PARAM_BODY = "body";
 
     private IBurpExtenderCallbacks callbacks;
 
     private IExtensionHelpers helpers;
+
+    private IHttpRequestResponse baseMessage;
+
+    private URL url;
+
+    private String method;
+
+    private List<String> headers = new ArrayList<>();
+
+    private Map<String, String> parameters = new LinkedHashMap<>();
+
+    private String body;
+
+    private byte[] currentRequest;
 
     private SecurityCheckExecutorService executorService;
 
@@ -39,14 +52,23 @@ public class BurpExtender implements IBurpExtender, IContextMenuFactory {
         this.callbacks.registerContextMenuFactory(this);// for menus
     }
 
-    @Override
     public List<JMenuItem> createMenuItems(IContextMenuInvocation iContextMenuInvocation) {
 
-        final BurpHelperDto helperDto = new BurpHelperDto(this, this.callbacks, this.helpers, iContextMenuInvocation);
-
         final List<JMenuItem> menuItems = new ArrayList<>();
-        JMenu dispatcherAnalysisMenu = new AEMSecurityAnalysisMenu(this.executorService, helperDto);
-        menuItems.add(dispatcherAnalysisMenu);
+
+        //register("AuditLogServlet enabled", new GenericCheckActionListener(this.executorService, helperDto, AuditServletDetector.class));
+
         return menuItems;
+    }
+
+
+    private void register(final String name, final ActionListener actionListener) {
+        final JMenuItem menuItem = new JMenuItem(name);
+        menuItem.addActionListener(actionListener);
+        this.add(menuItem);
+    }
+
+    private void addMenuSeparator() {
+        this.addSeparator();
     }
 }
