@@ -27,6 +27,16 @@ public class EvaluationCriteria {
     public void addBodyContainsAllRule(String... tokens){
         this.evaluationRules.add(BodyContainsRule.containsAll(tokens));
     }
+
+    public void addStatusCodeEquals(int statusCode){
+        this.evaluationRules.add(StatusCodeRule.equalsRule(statusCode));
+    }
+
+    public void addStatusCodeNotEquals(int statusCode){
+        this.evaluationRules.add(StatusCodeRule.notEqualsRule(statusCode));
+    }
+
+
     /*
     detect:
             - type: all
