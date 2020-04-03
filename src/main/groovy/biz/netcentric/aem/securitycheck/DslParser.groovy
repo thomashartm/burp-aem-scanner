@@ -1,8 +1,8 @@
-package biz.netcentric.aem.securitycheck.dsl
+package biz.netcentric.aem.securitycheck
 
 import biz.netcentric.aem.securitycheck.checks.model.SecurityCheck
-import biz.netcentric.aem.securitycheck.files.FileSystemResourceLoader
-import biz.netcentric.aem.securitycheck.files.SourceFile
+import biz.netcentric.aem.securitycheck.files.FileSystemLoader
+import biz.netcentric.aem.securitycheck.files.Source
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ImportCustomizer
 
@@ -10,15 +10,15 @@ class DslParser {
 
     def DEFAULT_IMPORTS = ["biz.netcentric.aem.securitycheck.checks.model", "biz.netcentric.aem.securitycheck.dsl"]
 
-    static void main(String[] args){
+    static void main(String[] args) {
         DslParser parser = new DslParser()
         String location = args[0]
         parser.loadScripts(location)
     }
 
     List<SecurityCheck> loadScripts(String location) {
-        FileSystemResourceLoader fsLoader = new FileSystemResourceLoader()
-        List<SourceFile> sources = fsLoader.loadFiles(location)
+        FileSystemLoader fsLoader = new FileSystemLoader()
+        List<Source> sources = fsLoader.loadFiles(location)
 
         List<SecurityCheck> checks = new ArrayList<>();
         sources.each { sourceFile ->
@@ -28,7 +28,7 @@ class DslParser {
         return checks
     }
 
-    SecurityCheck buildScript(SourceFile sourceFile){
+    SecurityCheck buildScript(Source sourceFile) {
         CompilerConfiguration compilerConfig = createCompilerConfiguration()
         GroovyShell groovyShell = new GroovyShell(compilerConfig)
 

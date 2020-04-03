@@ -1,5 +1,6 @@
 package biz.netcentric.aem.securitycheck.dsl;
 
+import biz.netcentric.aem.securitycheck.DslParser;
 import biz.netcentric.aem.securitycheck.checks.model.SecurityCheck;
 import biz.netcentric.aem.securitycheck.checks.model.SecurityCheckRequest;
 import org.junit.Assert;
@@ -51,5 +52,13 @@ class DslParserTest {
         Assert.assertTrue(steps.get(0).getPaths().containsAll(Arrays.asList("/content", "/etc", "/apps")));
 
         Assert.assertTrue(steps.get(1).getPaths().containsAll(Arrays.asList("/content", "/etc", "/apps")));
+    }
+
+    @Test
+    void verifyEmptyPath() {
+        DslParser dslParser = new DslParser();
+        List<SecurityCheck> securityChecks = dslParser.loadScripts("/securitychecksnonexist");
+
+        Assert.assertEquals(0, securityChecks.size());
     }
 }
