@@ -1,40 +1,26 @@
 package burp;
 
-import biz.netcentric.aem.securitycheck.checks.service.SecurityCheckExecutorService;
+import biz.netcentric.aem.securitycheck.SecurityCheckService;
+import biz.netcentric.aem.securitycheck.SecurityCheckServiceFactory;
+import burp.data.BurpHelperDto;
+import burp.ui.SecurityCheckMenu;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * This plugin context create a menu entry which allows to trigger a security scan of AEM using the integrated checks
+ */
 public class BurpExtender extends JMenu implements IBurpExtender, IContextMenuFactory {
 
     private static final String EXTENSION_NAME = "AEM Security Scanner";
-
-    public static final String PARAM_BODY = "body";
 
     private IBurpExtenderCallbacks callbacks;
 
     private IExtensionHelpers helpers;
 
-    private IHttpRequestResponse baseMessage;
-
-    private URL url;
-
-    private String method;
-
-    private List<String> headers = new ArrayList<>();
-
-    private Map<String, String> parameters = new LinkedHashMap<>();
-
-    private String body;
-
-    private byte[] currentRequest;
-
-    private SecurityCheckExecutorService executorService;
+    private SecurityCheckService securityCheckService;
 
     @Override
     public void registerExtenderCallbacks(final IBurpExtenderCallbacks callbacks) {
@@ -46,29 +32,18 @@ public class BurpExtender extends JMenu implements IBurpExtender, IContextMenuFa
 
         // set our extension name
         callbacks.setExtensionName(EXTENSION_NAME);
-
-        this.executorService = new SecurityCheckExecutorService(5);
-
         this.callbacks.registerContextMenuFactory(this);// for menus
+        this.securityCheckService = SecurityCheckServiceFactory.createSecurityCheckService();
     }
 
+
+    @Override
     public List<JMenuItem> createMenuItems(IContextMenuInvocation iContextMenuInvocation) {
+        final BurpHelperDto helperDto = new BurpHelperDto(this, this.callbacks, this.helpers, iContextMenuInvocation);
 
         final List<JMenuItem> menuItems = new ArrayList<>();
-
-        //register("AuditLogServlet enabled", new GenericCheckActionListener(this.executorService, helperDto, AuditServletDetector.class));
-
+        JMenu dispatcherAnalysisMenu = new SecurityCheckMenu(this.securityCheckService, helperDto);
+        menuItems.add(dispatcherAnalysisMenu);
         return menuItems;
-    }
-
-
-    private void register(final String name, final ActionListener actionListener) {
-        final JMenuItem menuItem = new JMenuItem(name);
-        menuItem.addActionListener(actionListener);
-        this.add(menuItem);
-    }
-
-    private void addMenuSeparator() {
-        this.addSeparator();
     }
 }

@@ -1,7 +1,7 @@
 package biz.netcentric.aem.securitycheck.dsl
 
-import biz.netcentric.aem.securitycheck.checks.model.SecurityCheck
-import biz.netcentric.aem.securitycheck.checks.model.Vulnerability
+import biz.netcentric.aem.securitycheck.model.SecurityCheck
+import biz.netcentric.aem.securitycheck.model.Vulnerability
 
 class CheckSpec {
 

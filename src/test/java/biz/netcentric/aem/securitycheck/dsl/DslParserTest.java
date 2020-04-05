@@ -1,8 +1,8 @@
 package biz.netcentric.aem.securitycheck.dsl;
 
 import biz.netcentric.aem.securitycheck.DslParser;
-import biz.netcentric.aem.securitycheck.checks.model.SecurityCheck;
-import biz.netcentric.aem.securitycheck.checks.model.SecurityCheckRequest;
+import biz.netcentric.aem.securitycheck.model.SecurityCheck;
+import biz.netcentric.aem.securitycheck.model.SecurityCheckRequest;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class DslParserTest {
 

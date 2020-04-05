@@ -1,7 +1,7 @@
 package biz.netcentric.aem.securitycheck.dsl
 
-import biz.netcentric.aem.securitycheck.checks.model.HttpMethod
-import biz.netcentric.aem.securitycheck.checks.model.SecurityCheckRequest
+import biz.netcentric.aem.securitycheck.model.HttpMethod
+import biz.netcentric.aem.securitycheck.model.SecurityCheckRequest
 
 class RequestSpec {
 

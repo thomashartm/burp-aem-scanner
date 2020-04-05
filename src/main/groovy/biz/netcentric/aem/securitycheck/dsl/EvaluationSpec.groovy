@@ -1,7 +1,7 @@
 package biz.netcentric.aem.securitycheck.dsl
 
-import biz.netcentric.aem.securitycheck.checks.model.EvaluationCriteria
-import biz.netcentric.aem.securitycheck.checks.model.RuleEvaluationType
+import biz.netcentric.aem.securitycheck.model.EvaluationCriteria
+import biz.netcentric.aem.securitycheck.model.RuleEvaluationType
 import org.apache.commons.lang3.StringUtils
 
 class EvaluationSpec {
