@@ -14,7 +14,7 @@ public class SecurityCheckMenu extends JMenu {
         this.helperDto = helperDto;
         this.setText("AEM Checks");
         // CRX
-        register("Run all checks", new GenericCheckActionListener(securityCheckService, helperDto));
+        register("Run all checks", new RunChecksActionListener(securityCheckService, helperDto));
     }
 
     private void register(final String name, final ActionListener actionListener) {

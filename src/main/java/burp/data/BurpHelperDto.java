@@ -1,5 +1,6 @@
 package burp.data;
 
+import biz.netcentric.aem.securitycheck.util.Logger;
 import burp.BurpExtender;
 import burp.IBurpExtenderCallbacks;
 import burp.IContextMenuInvocation;
@@ -15,6 +16,8 @@ import lombok.Getter;
 @Getter
 public class BurpHelperDto {
 
+    private CallbackLogger logger;
+
     private IContextMenuInvocation iContextMenuInvocation;
 
     private IBurpExtenderCallbacks callbacks;
@@ -26,6 +29,7 @@ public class BurpHelperDto {
     public BurpHelperDto(final IBurpExtenderCallbacks callbacks) {
         this.callbacks = callbacks;
         this.helpers = callbacks.getHelpers();
+        this.logger = new CallbackLogger(this.callbacks);
         this.extender = null;
         this.iContextMenuInvocation = null;
     }
@@ -35,5 +39,6 @@ public class BurpHelperDto {
         this.callbacks = callbacks;
         this.helpers = helpers;
         this.iContextMenuInvocation = iContextMenuInvocation;
+        this.logger = new CallbackLogger(this.callbacks);
     }
 }

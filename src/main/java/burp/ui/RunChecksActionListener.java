@@ -2,8 +2,9 @@ package burp.ui;
 
 import biz.netcentric.aem.securitycheck.SecurityCheckService;
 import burp.IHttpRequestResponse;
+import burp.data.BurpContext;
 import burp.data.BurpHelperDto;
-import burp.http.BurpHttpClient;
+import burp.http.BurpHttpClientProvider;
 
 
 import java.awt.event.ActionEvent;
@@ -16,7 +17,7 @@ import java.lang.reflect.Constructor;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class GenericCheckActionListener implements ActionListener {
+public class RunChecksActionListener implements ActionListener {
 
     private final BurpHelperDto helperDto;
 
@@ -27,7 +28,7 @@ public class GenericCheckActionListener implements ActionListener {
      *
      * @param helperDto The DTO for burp internal functionality
      */
-    public GenericCheckActionListener(final SecurityCheckService securityCheckService, final BurpHelperDto helperDto) {
+    public RunChecksActionListener(final SecurityCheckService securityCheckService, final BurpHelperDto helperDto) {
         this.helperDto = helperDto;
         this.securityCheckService = securityCheckService;
     }
@@ -37,10 +38,15 @@ public class GenericCheckActionListener implements ActionListener {
         this.helperDto.getCallbacks().printOutput("GenericCheckActionListener triggered. " + event.toString());
         final IHttpRequestResponse[] messages = this.helperDto.getIContextMenuInvocation().getSelectedMessages();
 
-        final BurpHttpClient httpClient = new BurpHttpClient(this.helperDto, messages[0]);
 
-        securityCheckService.runSecurityChecks(httpClient);
-        // now we start crafting requests for our vulnerabilities
+
+        final BurpContext context = BurpContext.builder()
+                .logger(this.helperDto.getLogger())
+                .clientProvider(new BurpHttpClientProvider(this.helperDto, messages[0]))
+                .build();
+
         // TODO this is the entry point to trigger any subsequent action with the provided SecurityCheckService dependency
+        securityCheckService.runSecurityChecks(context);
+
     }
 }

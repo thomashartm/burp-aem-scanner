@@ -1,11 +1,13 @@
 package biz.netcentric.aem.securitycheck.http;
 
+import biz.netcentric.aem.securitycheck.HttpClientProvider;
+
 public class Detector {
 
-    HttpClient httpClientDelegate;
+    HttpClientProvider httpClientProviderDelegate;
 
-    public Detector(HttpClient httpClientDelegate) {
-        this.httpClientDelegate = httpClientDelegate;
+    public Detector(HttpClientProvider httpClientProviderDelegate) {
+        this.httpClientProviderDelegate = httpClientProviderDelegate;
     }
 
     public void scan(){

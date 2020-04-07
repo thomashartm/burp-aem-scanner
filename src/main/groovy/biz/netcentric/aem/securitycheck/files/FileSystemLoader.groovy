@@ -1,55 +1,64 @@
 package biz.netcentric.aem.securitycheck.files
 
-import java.util.stream.Collectors
+import java.nio.file.*
+import java.nio.file.attribute.BasicFileAttributes
 
+/**
+ * Loads source files from the file system which can be a simple path outside or inside of a jar.
+ */
 class FileSystemLoader {
 
-    static final String PATTERN_FILE_RESOURCE_PATH = "%s/%s"
-
     List<Source> loadFiles(String path) {
-        try (InputStream inputStream = getResourceAsStream(path)) {
-            if (inputStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))
-                return reader.lines()
-                        .map(fileName -> String.format(PATTERN_FILE_RESOURCE_PATH, path, fileName))
-                        .map(fullFileResourcePath -> loadFileContent(fullFileResourcePath))
-                        .filter(optional -> optional.isPresent())
-                        .map(spec -> spec.get())
-                        .collect(Collectors.toList())
+        URI uri = this.getClass().getResource(path).toURI()
+        List<Source> sources = []
+        FileSystem fileSystem
+        try {
+            Path myPath
+            if (uri.getScheme().equals("jar")) {
+                fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object> emptyMap());
+                myPath = fileSystem.getPath(path);
             } else {
-                System.out.println("Path does not provide a readable stream" + path)
-            }
-        } catch (IOException e) {
-            e.printStackTrace()
-        }
-
-        Collections.emptyList()
-    }
-
-    InputStream getResourceAsStream(String resource) {
-        InputStream stream = getContextClassLoader().getResourceAsStream(resource)
-
-        stream == null ? getClass().getResourceAsStream(resource) : stream
-    }
-
-    ClassLoader getContextClassLoader() {
-        Thread.currentThread().getContextClassLoader()
-    }
-
-    Optional<Source> loadFileContent(String path) {
-        try (InputStream inputStream = getResourceAsStream(path)) {
-            ByteArrayOutputStream result = new ByteArrayOutputStream()
-            byte[] buffer = new byte[1024]
-            int length
-            while ((length = inputStream.read(buffer)) != -1) {
-                result.write(buffer, 0, length)
+                myPath = Paths.get(uri);
             }
 
-            return Optional.of(new Source(content: result.toString(), location: path))
-        } catch (IOException e) {
-            e.printStackTrace()
+            Files.walkFileTree(myPath, new FileVisitor<Path>() {
+
+                @Override
+                FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    return FileVisitResult.CONTINUE
+                }
+
+                @Override
+                FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    InputStream is
+                    try {
+                        is = Files.newInputStream(file, StandardOpenOption.READ)
+                        sources << new Source(content: is.text, location: file.toUri().toString())
+                    } catch (Exception ex) {
+                        ex.printStackTrace()
+                    } finally {
+                        if (is != null) is.close()
+                    }
+
+                    return FileVisitResult.CONTINUE
+                }
+
+                @Override
+                FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                    return FileVisitResult.TERMINATE
+                }
+
+                @Override
+                FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    return FileVisitResult.CONTINUE
+                }
+            })
+        } finally {
+            if (fileSystem != null) {
+                fileSystem.close()
+            }
         }
 
-        Optional.empty()
+        sources
     }
 }

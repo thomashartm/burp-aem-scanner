@@ -1,9 +1,10 @@
 package biz.netcentric.aem.securitycheck.engine;
 
 import biz.netcentric.aem.securitycheck.DslParser;
+import biz.netcentric.aem.securitycheck.EnvironmentContext;
 import biz.netcentric.aem.securitycheck.SecurityCheckService;
 import biz.netcentric.aem.securitycheck.http.Detector;
-import biz.netcentric.aem.securitycheck.http.HttpClient;
+import biz.netcentric.aem.securitycheck.HttpClientProvider;
 import biz.netcentric.aem.securitycheck.model.SecurityCheck;
 
 import java.util.Arrays;
@@ -21,7 +22,9 @@ public class SecurityCheckServiceImpl implements SecurityCheckService {
         this.dslParser = new DslParser();
     }
 
-    public void runSecurityChecks(final HttpClient httpClient) {
+    public void runSecurityChecks(EnvironmentContext context) {
+        context.getLogger().log("SecurityCheckServiceImpl triggered");
+
         List<String> checkLocations = getCheckSourceFolder();
         List<SecurityCheck> securityChecks = dslParser.loadScripts(checkLocations);
 
@@ -32,9 +35,8 @@ public class SecurityCheckServiceImpl implements SecurityCheckService {
             securityCheckExecutor.init();
 
             for(SecurityCheck securityCheck : securityChecks){
-                Detector detector = new Detector(httpClient);
-                SecurityCheckCallable callable = new SecurityCheckCallable(securityCheck, detector);
-
+                context.getLogger().log("SecurityCheck triggered: " + securityCheck.getId());
+                SecurityCheckCallable callable = new SecurityCheckCallable(securityCheck, context);
                 securityCheckExecutor.executeAsync(callable);
             }
         } catch (Exception ex) {

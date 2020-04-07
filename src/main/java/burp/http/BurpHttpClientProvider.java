@@ -1,21 +1,25 @@
 package burp.http;
 
-import biz.netcentric.aem.securitycheck.http.HttpClient;
+import biz.netcentric.aem.securitycheck.HttpClientProvider;
 import biz.netcentric.aem.securitycheck.model.HttpMethod;
 import burp.IHttpRequestResponse;
 import burp.IHttpService;
 import burp.data.BurpHelperDto;
 
-public class BurpHttpClient implements HttpClient {
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class BurpHttpClientProvider implements HttpClientProvider {
 
     private final BurpHelperDto helperDto;
     private final IHttpRequestResponse requestResponse;
     private final IHttpService httpService;
 
-    public BurpHttpClient(final BurpHelperDto helperDto, final IHttpRequestResponse requestResponse) {
+    public BurpHttpClientProvider(final BurpHelperDto helperDto, final IHttpRequestResponse requestResponse) {
         this.helperDto = helperDto;
         this.requestResponse = requestResponse;
         this.httpService = requestResponse.getHttpService();
+
     }
 
     public BurpHelperDto getHelperDto() {
@@ -27,7 +31,7 @@ public class BurpHttpClient implements HttpClient {
     }
 
     @Override
-    public RequestDelegate create(HttpMethod method) {
+    public RequestDelegate createRequestDelegate(HttpMethod method) {
 
         if(HttpMethod.GET == method){
             return new GetRequest(helperDto, requestResponse);
@@ -38,5 +42,10 @@ public class BurpHttpClient implements HttpClient {
         }
 
         throw new UnsupportedOperationException("Unable to create a method of type " + method.toString());
+    }
+
+    @Override
+    public URL createUrl(final String path) throws MalformedURLException {
+        return new URL(this.httpService.getProtocol(), this.httpService.getHost(), this.httpService.getPort(), path);
     }
 }

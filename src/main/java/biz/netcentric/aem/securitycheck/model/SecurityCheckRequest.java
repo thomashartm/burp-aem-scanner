@@ -6,12 +6,14 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class SecurityCheckRequest {
+public class SecurityCheckRequest{
 
     private static final String PATH_WITH_EXT = "%s.%s";
 
@@ -31,7 +33,6 @@ public class SecurityCheckRequest {
 
     public List<String> createPathMutations() {
         List<String> mutations = joinPathsAndSuffixes(paths, selectors);
-
         return joinPathsAndSuffixes(mutations, extensions);
     }
 
@@ -52,6 +53,14 @@ public class SecurityCheckRequest {
         });
 
         return mutations;
+    }
+
+    public HttpMethod method(){
+        Optional<HttpMethod> selectedMethod = Arrays.asList(HttpMethod.values())
+                .stream()
+                .filter(httpMethod -> StringUtils.equalsIgnoreCase(httpMethod.getName(), this.method)).findFirst();
+
+        return selectedMethod.orElseThrow();
     }
 
     /*
