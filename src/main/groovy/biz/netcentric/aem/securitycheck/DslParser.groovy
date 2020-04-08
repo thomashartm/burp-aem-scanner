@@ -8,6 +8,8 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer
 
 class DslParser {
 
+    def DEFAULT_STATIC_IMPORTS = ["biz.netcentric.aem.securitycheck.dsl.CheckDsl"]
+
     def DEFAULT_IMPORTS = ["biz.netcentric.aem.securitycheck.model", "biz.netcentric.aem.securitycheck.dsl"]
 
     static void main(String[] args) {
@@ -48,7 +50,7 @@ class DslParser {
 
     private CompilerConfiguration createCompilerConfiguration() {
         ImportCustomizer importCustomizer = new ImportCustomizer()
-        importCustomizer.addStaticStars("biz.netcentric.aem.securitycheck.dsl.CheckSpec")
+        importCustomizer.addStaticStars(DEFAULT_STATIC_IMPORTS.toArray(new String[DEFAULT_STATIC_IMPORTS.size()]))
         importCustomizer.addStarImports(DEFAULT_IMPORTS.toArray(new String[DEFAULT_IMPORTS.size()]))
 
         CompilerConfiguration compilerConfig = new CompilerConfiguration()

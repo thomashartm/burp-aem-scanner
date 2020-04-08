@@ -31,6 +31,7 @@ check {
 
         }
     }
-    print "Hello"
+
+    print "Executed test script"
 
 }

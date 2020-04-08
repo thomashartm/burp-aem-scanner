@@ -9,7 +9,18 @@ import java.nio.file.attribute.BasicFileAttributes
 class FileSystemLoader {
 
     List<Source> loadFiles(String path) {
-        URI uri = this.getClass().getResource(path).toURI()
+        URL resource = this.getClass().getResource(path)
+        if(resource != null){
+            return loadFiles(resource)
+        }
+
+        Collections.emptyList()
+    }
+
+    List<Source> loadFiles(URL url) {
+        assert url != null
+
+        URI uri = url.toURI()
         List<Source> sources = []
         FileSystem fileSystem
         try {

@@ -3,26 +3,26 @@ package biz.netcentric.aem.securitycheck.dsl
 import biz.netcentric.aem.securitycheck.model.HttpMethod
 import biz.netcentric.aem.securitycheck.model.SecurityCheckRequest
 
-class RequestSpec {
+class RequestDsl {
 
     SecurityCheckRequest request
 
-    RequestSpec(){
+    RequestDsl(){
         this.request = new SecurityCheckRequest()
     }
 
-    static SecurityCheckRequest post(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = RequestSpec) Closure closure) {
+    static SecurityCheckRequest post(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = RequestDsl) Closure closure) {
         return createAndRunClosure(closure, HttpMethod.POST)
     }
 
-    static SecurityCheckRequest get(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = RequestSpec) Closure closure) {
+    static SecurityCheckRequest get(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = RequestDsl) Closure closure) {
         return createAndRunClosure(closure, HttpMethod.GET)
     }
 
-    private static RequestSpec createAndRunClosure(Closure closure, HttpMethod method) {
+    private static RequestDsl createAndRunClosure(Closure closure, HttpMethod method) {
         assert closure != null
 
-        RequestSpec spec = new RequestSpec()
+        RequestDsl spec = new RequestDsl()
         spec.getRequest().setMethod(method)
 
         closure.setDelegate(spec)
@@ -65,8 +65,8 @@ class RequestSpec {
         this.request.setPaths(Arrays.asList(paths))
     }
 
-    void evaluate(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = EvaluationSpec) Closure closure) {
-        EvaluationSpec spec = new EvaluationSpec()
+    void evaluate(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = EvaluationDsl) Closure closure) {
+        EvaluationDsl spec = new EvaluationDsl()
         closure.setDelegate(spec)
         closure.setResolveStrategy(Closure.OWNER_FIRST)
 

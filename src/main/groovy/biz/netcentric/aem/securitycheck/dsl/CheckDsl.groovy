@@ -3,11 +3,11 @@ package biz.netcentric.aem.securitycheck.dsl
 import biz.netcentric.aem.securitycheck.model.SecurityCheck
 import biz.netcentric.aem.securitycheck.model.Vulnerability
 
-class CheckSpec {
+class CheckDsl {
 
     SecurityCheck securityCheck;
 
-    CheckSpec(){
+    CheckDsl(){
         this.securityCheck = new SecurityCheck()
     }
 
@@ -15,28 +15,28 @@ class CheckSpec {
         return this.securityCheck
     }
 
-    static SecurityCheck check(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = CheckSpec) Closure closure) {
+    static SecurityCheck check(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = CheckDsl) Closure closure) {
         assert closure != null
 
-        CheckSpec spec = new CheckSpec()
-        closure.setDelegate(spec)
+        CheckDsl dsl = new CheckDsl()
+        closure.setDelegate(dsl)
         closure.setResolveStrategy(Closure.OWNER_FIRST)
 
         closure()
 
-        spec.toSecurityCheck()
+        dsl.toSecurityCheck()
     }
 
-    void request(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = RequestSpec) Closure closure){
+    void request(@DelegatesTo(strategy = Closure.OWNER_FIRST, value = RequestDsl) Closure closure){
         assert closure != null
 
-        RequestSpec spec = new RequestSpec()
-        closure.setDelegate(spec)
+        RequestDsl dsl = new RequestDsl()
+        closure.setDelegate(dsl)
         closure.setResolveStrategy(Closure.OWNER_FIRST)
 
         closure()
 
-        this.securityCheck.addSecurityCheckRequest(spec.getRequest())
+        this.securityCheck.addSecurityCheckRequest(dsl.getRequest())
     }
 
     def id(String id){
