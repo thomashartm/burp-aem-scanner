@@ -1,5 +1,6 @@
 package burp.http;
 
+import biz.netcentric.aem.securitycheck.http.RequestDelegate;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
 import burp.IParameter;

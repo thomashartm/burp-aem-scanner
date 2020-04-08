@@ -1,4 +1,6 @@
-package burp.http;
+package biz.netcentric.aem.securitycheck.http;
+
+import burp.http.ResponseEntity;
 
 import java.net.URL;
 

@@ -1,7 +1,7 @@
 package biz.netcentric.aem.securitycheck.dsl
 
 import biz.netcentric.aem.securitycheck.dsl.detection.EvaluationRule
-import biz.netcentric.aem.securitycheck.model.HttpRequestResponse
+import biz.netcentric.aem.securitycheck.http.HttpRequestResponse
 
 /**
  * DSL to process the define and process the evaluation criteria for responses
@@ -56,5 +56,4 @@ class EvaluationDsl {
 
         results
     }
-
 }

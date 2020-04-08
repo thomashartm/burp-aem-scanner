@@ -1,7 +1,7 @@
 package biz.netcentric.aem.securitycheck.dsl.detection
 
 import biz.netcentric.aem.securitycheck.model.EvaluationResult
-import biz.netcentric.aem.securitycheck.model.HttpRequestResponse
+import biz.netcentric.aem.securitycheck.http.HttpRequestResponse
 import org.apache.commons.lang3.StringUtils
 
 class EvaluationRule {

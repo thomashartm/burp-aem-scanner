@@ -1,6 +1,7 @@
 package burp.http;
 
 import biz.netcentric.aem.securitycheck.HttpClientProvider;
+import biz.netcentric.aem.securitycheck.http.RequestDelegate;
 import biz.netcentric.aem.securitycheck.model.HttpMethod;
 import burp.IHttpRequestResponse;
 import burp.IHttpService;

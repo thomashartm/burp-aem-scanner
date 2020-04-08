@@ -1,7 +1,7 @@
 package biz.netcentric.aem.securitycheck;
 
 import biz.netcentric.aem.securitycheck.model.HttpMethod;
-import burp.http.RequestDelegate;
+import biz.netcentric.aem.securitycheck.http.RequestDelegate;
 
 import java.net.MalformedURLException;
 import java.net.URL;

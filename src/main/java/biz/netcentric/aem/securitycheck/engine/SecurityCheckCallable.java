@@ -5,7 +5,8 @@ import biz.netcentric.aem.securitycheck.HttpClientProvider;
 import biz.netcentric.aem.securitycheck.model.SecurityCheck;
 import biz.netcentric.aem.securitycheck.model.SecurityCheckRequest;
 import biz.netcentric.aem.securitycheck.util.Logger;
-import burp.http.RequestDelegate;
+import biz.netcentric.aem.securitycheck.http.RequestDelegate;
+import burp.http.ResponseEntity;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,7 +48,8 @@ public class SecurityCheckCallable implements Callable<CheckResult> {
             try {
                 final URL url = this.httpClientProvider.createUrl(pathMutation);
                 final RequestDelegate requestDelegate = this.httpClientProvider.createRequestDelegate(step.method());
-                requestDelegate.send(url);
+                ResponseEntity entity = requestDelegate.send(url);
+                logger.log(pathMutation +  " returns status Code " + entity.getStatus());
             } catch (MalformedURLException e) {
                 this.logger.error(e, "Unable to create URL to " +  pathMutation);
             }

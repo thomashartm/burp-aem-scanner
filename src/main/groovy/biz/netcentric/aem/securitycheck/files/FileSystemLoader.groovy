@@ -2,6 +2,7 @@ package biz.netcentric.aem.securitycheck.files
 
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
+import java.util.stream.Collectors
 
 /**
  * Loads source files from the file system which can be a simple path outside or inside of a jar.
@@ -9,27 +10,30 @@ import java.nio.file.attribute.BasicFileAttributes
 class FileSystemLoader {
 
     List<Source> loadFiles(String path) {
+
         URL resource = this.getClass().getResource(path)
         if(resource != null){
-            return loadFiles(resource)
+            return loadFiles(resource, path)
         }
 
         Collections.emptyList()
     }
 
-    List<Source> loadFiles(URL url) {
+    List<Source> loadFiles(URL url, String location) {
         assert url != null
 
         URI uri = url.toURI()
         List<Source> sources = []
         FileSystem fileSystem
+        Path myPath
         try {
-            Path myPath
             if (uri.getScheme().equals("jar")) {
-                fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object> emptyMap());
-                myPath = fileSystem.getPath(path);
+                fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object> emptyMap())
+                fileSystem.getRootDirectories().each { path ->
+                }
+                myPath = fileSystem.getPath(location)
             } else {
-                myPath = Paths.get(uri);
+                myPath = Paths.get(uri.toString());
             }
 
             Files.walkFileTree(myPath, new FileVisitor<Path>() {
