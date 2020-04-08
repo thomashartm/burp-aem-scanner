@@ -47,7 +47,7 @@ public class SecurityCheckCallable implements Callable<CheckResult> {
 
             try {
                 final URL url = this.httpClientProvider.createUrl(pathMutation);
-                final RequestDelegate requestDelegate = this.httpClientProvider.createRequestDelegate(step.method());
+                final RequestDelegate requestDelegate = this.httpClientProvider.createRequestDelegate(step.getMethod());
                 ResponseEntity entity = requestDelegate.send(url);
                 logger.log(pathMutation +  " returns status Code " + entity.getStatus());
             } catch (MalformedURLException e) {

@@ -55,14 +55,16 @@ public class SecurityCheckRequest{
         return mutations;
     }
 
-    public HttpMethod method(){
-        Optional<HttpMethod> selectedMethod = Arrays.asList(HttpMethod.values())
-                .stream()
-                .filter(httpMethod -> StringUtils.equalsIgnoreCase(httpMethod.getName(), this.method)).findFirst();
+    public HttpMethod getMethod(){
+        if(StringUtils.isNotBlank(this.method)){
+            Optional<HttpMethod> selectedMethod = Arrays.asList(HttpMethod.values())
+                    .stream()
+                    .filter(httpMethod -> StringUtils.equalsIgnoreCase(httpMethod.getName(), this.method)).findFirst();
 
-        return selectedMethod.orElseThrow();
+            return selectedMethod.orElseThrow();
+        }
+        return HttpMethod.GET;
     }
-
     /*
     - name: "GET /crx/de"
     method: "GET"
