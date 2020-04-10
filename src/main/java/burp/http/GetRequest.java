@@ -1,12 +1,9 @@
 package burp.http;
 
 import biz.netcentric.aem.securitycheck.http.RequestDelegate;
-import burp.IExtensionHelpers;
-import burp.IHttpRequestResponse;
-import burp.IParameter;
-import burp.IRequestInfo;
+import biz.netcentric.aem.securitycheck.http.ResponseEntity;
+import burp.*;
 import burp.data.BurpHelperDto;
-
 
 import java.net.URL;
 import java.util.Arrays;
@@ -18,7 +15,7 @@ import java.util.List;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class GetRequest implements RequestDelegate {
+public class GetRequest extends AbstractRequestMethod implements RequestDelegate {
 
     private final IHttpRequestResponse baseMessage;
 
@@ -72,7 +69,7 @@ public class GetRequest implements RequestDelegate {
         final IHttpRequestResponse requestResponse = this.burpHelperDto.getCallbacks()
                 .makeHttpRequest(baseMessage.getHttpService(), this.message);
 
-        return ResponseEntity.create(requestResponse);
+        return this.createResponse(requestResponse);
     }
 
     @Override
@@ -82,7 +79,11 @@ public class GetRequest implements RequestDelegate {
     }
 
     public static RequestDelegate createInstance(final BurpHelperDto burpHelperDto, final IHttpRequestResponse baseMessage) {
-        final RequestDelegate getRequest = new GetRequest(burpHelperDto, baseMessage);
-        return getRequest;
+        return new GetRequest(burpHelperDto, baseMessage);
+    }
+
+    @Override
+    protected IBurpExtenderCallbacks getExtenderCallback() {
+        return this.burpHelperDto.getCallbacks();
     }
 }

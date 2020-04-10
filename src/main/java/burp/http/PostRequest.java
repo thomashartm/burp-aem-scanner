@@ -1,6 +1,8 @@
 package burp.http;
 
 import biz.netcentric.aem.securitycheck.http.RequestDelegate;
+import biz.netcentric.aem.securitycheck.http.ResponseEntity;
+import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
 import burp.IParameter;
@@ -14,7 +16,7 @@ import java.net.URL;
  * @author thomas.hartmann@netcentric.biz
  * @since 02/2019
  */
-public class PostRequest implements RequestDelegate {
+public class PostRequest extends AbstractRequestMethod implements RequestDelegate {
 
     private final IHttpRequestResponse baseMessage;
 
@@ -73,13 +75,13 @@ public class PostRequest implements RequestDelegate {
 
     public ResponseEntity send() {
         if (this.postMessage == null) {
-            return ResponseEntity.createIncomplete();
+            throw new RuntimeException("Unable to create POST due to missing post message");
         }
 
         final IHttpRequestResponse requestResponse = this.burpHelperDto.getCallbacks()
                 .makeHttpRequest(baseMessage.getHttpService(), this.postMessage);
         this.burpHelperDto.getCallbacks().printOutput("\n Send request: \n" + this.helpers.bytesToString(requestResponse.getRequest()) + "\n" );
-        return ResponseEntity.create(requestResponse);
+        return this.createResponse(requestResponse);
     }
 
     @Override
@@ -91,5 +93,10 @@ public class PostRequest implements RequestDelegate {
     public static PostRequest createInstance(final BurpHelperDto burpHelperDto, final IHttpRequestResponse baseMessage) {
         final PostRequest postRequest = new PostRequest(burpHelperDto, baseMessage);
         return postRequest;
+    }
+
+    @Override
+    protected IBurpExtenderCallbacks getExtenderCallback() {
+        return this.burpHelperDto.getCallbacks();
     }
 }
