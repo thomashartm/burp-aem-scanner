@@ -1,7 +1,9 @@
 package biz.netcentric.aem.securitycheck.dsl
 
 import biz.netcentric.aem.securitycheck.dsl.detection.EvaluationRule
-import biz.netcentric.aem.securitycheck.http.HttpRequestResponse
+import biz.netcentric.aem.securitycheck.http.ResponseEntity
+import biz.netcentric.aem.securitycheck.model.EvaluationResult
+
 
 /**
  * DSL to process the define and process the evaluation criteria for responses
@@ -25,34 +27,34 @@ import biz.netcentric.aem.securitycheck.http.HttpRequestResponse
  */
 class EvaluationDsl {
 
-    HttpRequestResponse httpRequestResponse
+    ResponseEntity response
 
-    List<EvaluationRule> allGroup = []
+    List<EvaluationResult> allGroup = []
 
-    List<EvaluationRule> oneOfGroup = []
+    List<EvaluationResult> oneOfGroup = []
 
-    EvaluationDsl(HttpRequestResponse httpRequestResponse) {
-        this.httpRequestResponse = httpRequestResponse
+    EvaluationDsl(ResponseEntity response) {
+        this.response = response
     }
 
     def all(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EvaluationRule) Closure closure) {
-        List<EvaluationRule> results = executeEvaluationClosure(closure)
+        List<EvaluationResult> results = executeEvaluationClosure(closure)
         this.allGroup.addAll(results)
     }
 
     def oneOf(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EvaluationRule) Closure closure) {
-        List<EvaluationRule> results = executeEvaluationClosure(closure)
+        List<EvaluationResult> results = executeEvaluationClosure(closure)
         this.oneOfGroup.addAll(results)
     }
 
-    private List<EvaluationRule> executeEvaluationClosure(Closure closure) {
-        EvaluationRule evaluator = new EvaluationRule(this.httpRequestResponse)
-        closure.setDelegate(evaluator)
+    private List<EvaluationResult> executeEvaluationClosure(Closure closure) {
+        EvaluationRule rule = new EvaluationRule(this.response)
+        closure.setDelegate(rule)
         closure.setResolveStrategy(Closure.DELEGATE_FIRST)
 
         closure()
 
-        List<EvaluationRule> results = closure.getResults()
+        List<EvaluationResult> results = closure.getResult()
 
         results
     }

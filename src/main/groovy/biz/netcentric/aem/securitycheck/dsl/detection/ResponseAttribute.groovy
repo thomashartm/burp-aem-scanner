@@ -3,13 +3,19 @@ package biz.netcentric.aem.securitycheck.dsl.detection
 class ResponseAttribute {
 
     // replace closures by methods to extract the respective property
-    def body(){
+    static def body(){
         return {response ->
             "body"
         }
     }
 
-    def status(){
+    static def status(){
+        return {response ->
+            "status"
+        }
+    }
+
+    static def statuscode(){
         return {response ->
             "status"
         }

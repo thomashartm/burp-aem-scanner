@@ -1,37 +1,73 @@
 package biz.netcentric.aem.securitycheck.dsl.detection
 
+import biz.netcentric.aem.securitycheck.http.ResponseEntity
 import biz.netcentric.aem.securitycheck.model.EvaluationResult
-import biz.netcentric.aem.securitycheck.http.HttpRequestResponse
 import org.apache.commons.lang3.StringUtils
 
 class EvaluationRule {
 
-    HttpRequestResponse httpRequestResponse
+    ResponseEntity responseEntity
 
-    EvaluationResult result
+    List<EvaluationResult> result = []
 
     String attributeValue
+
+    def body = {
+        return responseEntity.getMessageBody()
+    }
+
+    def status = {
+        return "${responseEntity.statusCode}"
+    }
+
+    EvaluationRule(ResponseEntity responseEntity) {
+        this.responseEntity = responseEntity
+    }
 
     EvaluationRule expect(String parameter) {
 
         this
     }
 
-    EvaluationRule expect(ResponseAttribute responseAttribute) {
-        this.attributeValue = responseAttribute(httpRequestResponse)
+    EvaluationRule expect(Closure responseAttribute) {
+        this.attributeValue = responseAttribute(responseEntity)
         this
     }
+
 
     void contains(String... tokens) {
 
         boolean containsToken = this.attributeValue != null && StringUtils.containsAny(this.attributeValue, tokens)
 
-        this.result = EvaluationResult.builder()
-                .checkId("xxx")
-                .name("xxx")
+
+        println this.attributeValue + " -- " +  tokens + " is " + containsToken
+        this.result.add(EvaluationResult.builder()
                 .result(containsToken)
-                .build()
+                .build())
     }
 
+    void equals(String... tokens) {
 
+        boolean equalsAnyToken = this.attributeValue != null && StringUtils.equalsAny(this.attributeValue, tokens)
+
+
+
+        this.result.add(EvaluationResult.builder()
+                .result(equalsAnyToken)
+                .build())
+    }
+
+    void is(Object token) {
+        boolean isValue = false
+
+        if(token != null){
+            isValue = StringUtils.equals(this.attributeValue, String.valueOf(token))
+        }
+
+        println this.attributeValue + " -- " +  token + " is " + isValue
+
+        this.result.add(EvaluationResult.builder()
+                .result(isValue)
+                .build())
+    }
 }
