@@ -16,7 +16,7 @@ public class EvaluationResult {
 
     String name;
 
-    boolean result;
+    boolean isMatch;
 
     boolean mandatory;
 }

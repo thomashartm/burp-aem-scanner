@@ -1,47 +1,14 @@
 package biz.netcentric.aem.securitycheck.dsl
 
-
-import biz.netcentric.aem.securitycheck.http.Cookie
-import biz.netcentric.aem.securitycheck.http.ResponseEntity
+import org.junit.Assert
 import org.junit.jupiter.api.Test
 
 class EvaluationDslTest {
 
     @Test
     void all() {
-        ResponseEntity responseEntity = new ResponseEntity(){
-
-            private String body = "{results: [xxx:yyy], total: 1}";
-            @Override
-            String getMessageBody() {
-                return body
-            }
-
-            @Override
-            byte[] getRawResponse() {
-                return body.getBytes()
-            }
-
-            @Override
-            int getStatusCode() {
-                return 200
-            }
-
-            @Override
-            String getMimeType() {
-                return "application/json"
-            }
-
-            @Override
-            List<String> getHeaders() {
-                return []
-            }
-
-            @Override
-            List<Cookie> getCookies() {
-                return []
-            }
-        }
+        ResponseEntityStub responseEntity = new ResponseEntityStub(
+                messageBody: "{results: [xxx:yyy], total: 1}", statusCode: 200)
 
         EvaluationDsl dsl = new EvaluationDsl(responseEntity)
 
@@ -50,10 +17,68 @@ class EvaluationDslTest {
             expect status is 200
         }
 
-        // TODO expect that all rules are evaluated
+        Assert.assertTrue dsl.allCondition()
     }
 
     @Test
+    void allFailsWhenOneExpectationDoesNotMatch() {
+        ResponseEntityStub responseEntity = new ResponseEntityStub(
+                messageBody: "{results: [xxx:yyy], total: 1}", statusCode: 200, mimeType: "application/json")
+
+        EvaluationDsl dsl = new EvaluationDsl(responseEntity)
+
+        dsl.all {
+            expect body contains "results"
+            expect status is 200
+            expect mimeType is "text/html"
+        }
+
+        Assert.assertFalse dsl.allCondition()
+    }
+
+
+    @Test
     void oneOf() {
+        ResponseEntityStub responseEntity = new ResponseEntityStub(
+                messageBody: "{results: [xxx:yyy], total: 1}", statusCode: 200, mimeType: "application/json")
+
+        EvaluationDsl dsl = new EvaluationDsl(responseEntity)
+
+        dsl.oneOf {
+            expect body contains "text"
+            expect status is 200
+            expect mimeType is "text/html"
+        }
+
+        Assert.assertTrue dsl.oneOfCondition()
+    }
+
+    @Test
+    void oneOfFailsEmpty() {
+        ResponseEntityStub responseEntity = new ResponseEntityStub(
+                messageBody: "{results: [xxx:yyy], total: 1}", statusCode: 200, mimeType: "application/json")
+
+        EvaluationDsl dsl = new EvaluationDsl(responseEntity)
+
+        dsl.oneOf {
+        }
+
+        Assert.assertFalse dsl.oneOfCondition()
+    }
+
+    @Test
+    void oneOfFailsWhenNoConditionMatches() {
+        ResponseEntityStub responseEntity = new ResponseEntityStub(
+                messageBody: "error", statusCode: 404, mimeType: "application/text")
+
+        EvaluationDsl dsl = new EvaluationDsl(responseEntity)
+
+        dsl.oneOf {
+            expect body contains "results"
+            expect status is 200
+            expect mimeType is "application/json"
+        }
+
+        Assert.assertFalse dsl.oneOfCondition()
     }
 }
