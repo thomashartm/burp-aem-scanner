@@ -64,7 +64,7 @@ class CookieDsl {
                 propertyIsEqual = StringUtils.containsAny((String) propertyValue, values)
             }
 
-            parent.result.add DslOperationUtil.createEvaluationResult("cookie property ${propertyName} equals ${value}", propertyIsEqual)
+            parent.result.add DslOperationUtil.createEvaluationResult("cookie property ${propertyName} equals ${values}", propertyIsEqual)
 
             propertyIsEqual
         }

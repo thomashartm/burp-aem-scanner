@@ -10,12 +10,16 @@ import org.apache.commons.lang3.StringUtils
  *  expectkeyword attribute operator 'expected value'
  *
  * Any expectation starts with the keyword expect, followed by the attribute to evaluate.
+ * Checking for cookies has a special syntax as cookies are not simple string value
  * See the following example
  * {@code
  *  expect body contains "sometoken"
- *}
+ *  cookie name: "someName" property "domain" equals "github.com"
+ *  cookie name: "someOtherName" with "domain" contains "adobe"
+ * }
  *
  * Requires the response to be set through the constructor.
+ *
  * Supported operators:
  * contains, equals and is
  */
@@ -53,11 +57,6 @@ class EvaluationRuleDsl {
         return responseEntity.getCookies()
     }
 
-    def cookie = { name ->
-        println "xx " + name
-        return responseEntity.getCookies()
-    }
-
     EvaluationRuleDsl expect(Closure responseAttribute) {
         this.attributeValues.addAll(responseAttribute(responseEntity))
         this
@@ -65,7 +64,6 @@ class EvaluationRuleDsl {
 
     CookieDsl cookie(Map m) {
         String name = Optional.of(m.get("name")).orElse("")
-
         Cookie selectedCookie = responseEntity.getCookies()
                 .stream()
                 .filter(cookie -> {
@@ -81,21 +79,12 @@ class EvaluationRuleDsl {
 
     }
 
-    Cookie cookie(String name){
-        return responseEntity.getCookies()
-                .stream()
-                .filter(cookie -> StringUtils.equalsIgnoreCase(name, cookie.name()))
-                .findFirst()
-                .orElse(null)
-    }
-
     void contains(String... tokens) {
         int matches = 0
         attributeValues.each { attributeValue ->
             if (isStringAttribute(attributeValue) && StringUtils.containsAny(attributeValue, tokens)) {
                 matches++;
             }
-
         }
 
         evaluateResults("contains ${tokens.toList()}", matches)
