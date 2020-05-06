@@ -38,6 +38,40 @@ class EvaluationRuleDslTest {
         Assert.assertFalse results.get(2).isMatch() // is must fail as it expects a larger ContentLength
     }
 
+    @Test
+    void evaluateCookieContains() {
+        ResponseEntityStub responseEntity = new ResponseEntityStub(
+                headers: ["ContentType: application/json", "X-NODEID: dispatcher", "ContentLength: 4450"],
+                cookies: [new CookieStub(name: "AWSLB", value: "32424234242432"),
+                          new CookieStub(name: "Authentication", value: "13243fdafdsf322343r42", path: "/", domain: "github.com")]
+        )
+
+        List<EvaluationResult> results = executeEvaluationClosure responseEntity, {
+            cookie name: "Authentication" exists
+        }
+
+        Assert.assertTrue results.get(0).isMatch() // regex match must be true
+        Assert.assertTrue results.size() == 1
+    }
+
+    @Test
+    void evaluateSpecificCookieWithValue() {
+        ResponseEntityStub responseEntity = new ResponseEntityStub(
+                headers: ["ContentType: application/json", "X-NODEID: dispatcher", "ContentLength: 4450"],
+                cookies: [new CookieStub(name: "AWSLB", value: "32424234242432"),
+                          new CookieStub(name: "Authentication", value: "13243fdafdsf322343r42", path: "/", domain: "github.com"),
+                          new CookieStub(name: "adobe-analytics", value: "bfsjfsdjfsdkfl", path: "/", domain: "adobe.com")
+                ]
+        )
+
+        List<EvaluationResult> results = executeEvaluationClosure responseEntity, {
+            cookie name: "Authentication" property "domain" equals "github.com"
+        }
+
+        Assert.assertTrue results.get(0).isMatch() // regex match must be true
+        Assert.assertTrue results.size() == 1
+    }
+
     private List<EvaluationResult> executeEvaluationClosure(ResponseEntityStub responseEntity, Closure closure) {
         EvaluationRuleDsl rule = new EvaluationRuleDsl(responseEntity)
         closure.setDelegate(rule)

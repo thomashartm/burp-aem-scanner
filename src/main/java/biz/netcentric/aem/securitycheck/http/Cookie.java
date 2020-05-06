@@ -1,6 +1,7 @@
 package biz.netcentric.aem.securitycheck.http;
 
 import java.util.Date;
+import java.util.Map;
 
 public interface Cookie {
 
@@ -13,4 +14,6 @@ public interface Cookie {
     String name();
 
     Date expirationTime();
+
+    Map<String, Object> map();
 }

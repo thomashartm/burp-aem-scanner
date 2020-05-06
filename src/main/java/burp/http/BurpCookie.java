@@ -4,6 +4,8 @@ import biz.netcentric.aem.securitycheck.http.Cookie;
 import burp.ICookie;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Wraps the ICookie interface.
@@ -47,5 +49,15 @@ public class BurpCookie implements Cookie {
     @Override
     public Date expirationTime() {
         return this.expiration;
+    }
+
+    @Override
+    public Map<String, Object> map() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("domain", this.domain);
+        properties.put("path", this.path);
+        properties.put("value", this.value);
+        properties.put("name", this.name);
+        return properties;
     }
 }

@@ -1,5 +1,6 @@
 package biz.netcentric.aem.securitycheck.dsl.detection
 
+import biz.netcentric.aem.securitycheck.http.Cookie
 import biz.netcentric.aem.securitycheck.http.ResponseEntity
 import biz.netcentric.aem.securitycheck.model.EvaluationResult
 import org.apache.commons.lang3.StringUtils
@@ -52,9 +53,40 @@ class EvaluationRuleDsl {
         return responseEntity.getCookies()
     }
 
+    def cookie = { name ->
+        println "xx " + name
+        return responseEntity.getCookies()
+    }
+
     EvaluationRuleDsl expect(Closure responseAttribute) {
         this.attributeValues.addAll(responseAttribute(responseEntity))
         this
+    }
+
+    CookieDsl cookie(Map m) {
+        String name = Optional.of(m.get("name")).orElse("")
+
+        Cookie selectedCookie = responseEntity.getCookies()
+                .stream()
+                .filter(cookie -> {
+                    return StringUtils.equalsIgnoreCase(name, cookie.name())
+                })
+                .findFirst()
+                .orElse(null)
+
+        new CookieDsl(parent: this, cookie: selectedCookie)
+    }
+
+    String with(String property, Object value){
+
+    }
+
+    Cookie cookie(String name){
+        return responseEntity.getCookies()
+                .stream()
+                .filter(cookie -> StringUtils.equalsIgnoreCase(name, cookie.name()))
+                .findFirst()
+                .orElse(null)
     }
 
     void contains(String... tokens) {
