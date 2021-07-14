@@ -52,6 +52,11 @@ class EvaluationRuleDslTest {
 
         Assert.assertTrue results.get(0).isMatch() // regex match must be true
         Assert.assertTrue results.size() == 1
+
+        List<EvaluationResult> resultsWithExpect = executeEvaluationClosure responseEntity, {
+            expect cookie "Authentication" exists
+        }
+
     }
 
     @Test

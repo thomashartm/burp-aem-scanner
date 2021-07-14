@@ -57,6 +57,18 @@ class EvaluationRuleDsl {
         return responseEntity.getCookies()
     }
 
+    def cookie = {criteria ->
+        // the argument is a map then we add all criteria if not then we treat it as a String
+        Map criteriaProperties = [:]
+        if(criteria instanceof Map){
+            criteriaProperties.putAll(criteria)
+        }else{
+            criteriaProperties.put("name", criteria)
+        }
+
+        return cookieByName(criteriaProperties)
+    }
+
     EvaluationRuleDsl expect(Closure responseAttribute) {
         this.attributeValues.addAll(responseAttribute(responseEntity))
         this
